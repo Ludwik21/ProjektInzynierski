@@ -40,7 +40,7 @@ namespace ProjektInzynierski.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AvailabilityStatus = table.Column<bool>(type: "bit", nullable: false),
                     PricePerDay = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
-                },
+                }
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Equipment", x => x.EquipmentID);
