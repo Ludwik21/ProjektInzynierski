@@ -3,28 +3,43 @@ using ProjektInzynierski.Models.ProjektContext;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Dodanie kontrolerów z widokami (MVC)
+builder.Services.AddControllersWithViews();
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// Konfiguracja bazy danych
 builder.Services.AddDbContext<ProjektContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Dodanie Swaggera do dokumentacji API
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Middleware dla œrodowiska Development (Swagger, Swagger UI)
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+    });
 }
 
-app.UseHttpsRedirection();
+// Routing aplikacji
+app.UseRouting();
 
+// Autoryzacja (mo¿esz dodaæ, jeœli w przysz³oœci bêdziesz mia³ mechanizmy autoryzacji)
 app.UseAuthorization();
 
-app.MapControllers();
+// Konfiguracja œcie¿ek i routingu
+app.UseEndpoints(endpoints =>
+{
+    // Domyœlny routing dla aplikacji
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Equipments}/{action=Index}/{id?}");
+});
 
+// Uruchomienie aplikacji
 app.Run();

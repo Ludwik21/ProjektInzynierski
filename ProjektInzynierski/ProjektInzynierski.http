@@ -1,6 +1,6 @@
 @ProjektInzynierski_HostAddress = http://localhost:5046
 
-GET {{ProjektInzynierski_HostAddress}}/weatherforecast/
+GET {{ProjektInzynierski_HostAddress}}
 Accept: application/json
 
 ###
