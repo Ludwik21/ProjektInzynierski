@@ -1,148 +1,50 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ProjektInzynierski.Models;
-using ProjektInzynierski.Models.ProjektContext;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace ProjektInzynierski.Controllers
 {
     public class ClientsController : Controller
     {
-        private readonly ProjektContext _context;
-
-        public ClientsController(ProjektContext context)
+        public IActionResult SelectCategory()
         {
-            _context = context;
+            var categories = new List<string> { "Kamery", "Oświetlenie", "Mikrofony" };
+            return View(categories); // To musi wskazywać na Views/Clients/SelectCategory.cshtml
         }
 
-        // GET: Clients
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public IActionResult SelectEquipment(string category)
         {
-            return View(await _context.Clients.ToListAsync());
+            // Pobranie sprzętu dla danej kategorii
+            var equipmentList = GetEquipmentByCategory(category);
+            return View(equipmentList); // To musi wskazywać na Views/Clients/SelectEquipment.cshtml
         }
 
-        // GET: Clients/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var client = await _context.Clients
-                .FirstOrDefaultAsync(m => m.ClientID == id);
-            if (client == null)
-            {
-                return NotFound();
-            }
-
-            return View(client);
-        }
-
-        // GET: Clients/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Clients/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ClientID,FirstName,LastName,Email,Adress,RegistrationDate")] Client client)
+        public IActionResult Reserve(int equipmentId)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(client);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(client);
+            // Logika dodania rezerwacji dla sprzętu
+            SendReservationRequest(equipmentId);
+            return RedirectToAction("ReservationPending");
         }
 
-        // GET: Clients/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult ReservationPending()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var client = await _context.Clients.FindAsync(id);
-            if (client == null)
-            {
-                return NotFound();
-            }
-            return View(client);
+            return View(); // Widok oczekiwania na zatwierdzenie rezerwacji
         }
 
-        // POST: Clients/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ClientID,FirstName,LastName,Email,Adress,RegistrationDate")] Client client)
+        private List<Equipment> GetEquipmentByCategory(string category)
         {
-            if (id != client.ClientID)
+            return new List<Equipment>
             {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(client);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ClientExists(client.ClientID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(client);
+                new Equipment { EquipmentID = 1, Name = "Kamera Sony", Category = category },
+                new Equipment { EquipmentID = 2, Name = "Kamera Canon", Category = category }
+            };
         }
 
-        // GET: Clients/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        private void SendReservationRequest(int equipmentId)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var client = await _context.Clients
-                .FirstOrDefaultAsync(m => m.ClientID == id);
-            if (client == null)
-            {
-                return NotFound();
-            }
-
-            return View(client);
-        }
-
-        // POST: Clients/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var client = await _context.Clients.FindAsync(id);
-            if (client != null)
-            {
-                _context.Clients.Remove(client);
-                await _context.SaveChangesAsync();
-            }
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool ClientExists(int id)
-        {
-            return _context.Clients.Any(e => e.ClientID == id);
+            // Wysłanie zapytania do admina o zatwierdzenie rezerwacji
         }
     }
 }

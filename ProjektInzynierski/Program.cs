@@ -28,7 +28,7 @@ if (app.Environment.IsDevelopment())
 
 // Routing aplikacji
 app.UseRouting();
-
+app.UseAuthentication();
 // Autoryzacja (mo¿esz dodaæ, jeœli w przysz³oœci bêdziesz mia³ mechanizmy autoryzacji)
 app.UseAuthorization();
 
@@ -38,7 +38,7 @@ app.UseEndpoints(endpoints =>
     // Domyœlny routing dla aplikacji
     endpoints.MapControllerRoute(
         name: "default",
-        pattern: "{controller=Equipments}/{action=Index}/{id?}");
+        pattern: "{controller=Home}/{action=Index}/{id?}");
 });
 
 // Uruchomienie aplikacji

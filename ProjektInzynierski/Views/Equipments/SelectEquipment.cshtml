@@ -1,0 +1,22 @@
+﻿@model List<ProjektInzynierski.Models.Equipment>
+
+@{
+    ViewData["Title"] = "Wybierz sprzęt";
+}
+
+<h2>Wybierz sprzęt z wybranej kategorii</h2>
+
+<ul class="list-group">
+    @foreach (var item in Model)
+    {
+        <li class="list-group-item">
+            <div class="d-flex justify-content-between">
+                <span>@item.Name - @item.Brand</span>
+                <form method="post" action="/Client/Reserve">
+                    <input type="hidden" name="equipmentId" value="@item.EquipmentID" />
+                    <button type="submit" class="btn btn-primary">Zarezerwuj</button>
+                </form>
+            </div>
+        </li>
+    }
+</ul>
