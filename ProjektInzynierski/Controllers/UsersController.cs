@@ -9,15 +9,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
+using System.Collections.Generic;
 
 namespace ProjektInzynierski.Controllers
 {
-    [Authorize] // Wymagana autoryzacja do wszystkich akcji w tym kontrolerze
+    [Authorize]
     public class UsersController : Controller
     {
         private readonly ProjektContext _context;
-        private readonly string _defaultUsername = "admin";
-        private readonly string _defaultPassword = "admin";
 
         public UsersController(ProjektContext context)
         {
@@ -46,12 +45,12 @@ namespace ProjektInzynierski.Controllers
 
                 if (user != null && VerifyPassword(user.UserPassword, model.Password))
                 {
-                    // Logowanie użytkownika
+                    // Jeśli dane logowania są poprawne, logowanie użytkownika
                     var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Role, user.Role) // Przykładowa rola
-            };
+                    {
+                        new Claim(ClaimTypes.Name, user.UserName),
+                        new Claim(ClaimTypes.Role, user.Role)
+                    };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -61,7 +60,7 @@ namespace ProjektInzynierski.Controllers
                     return RedirectToAction("Dashboard", "Users");
                 }
 
-                // Nieprawidłowe dane logowania
+                // Jeśli dane logowania są niepoprawne, wyświetl błąd
                 ModelState.AddModelError("", "Nieprawidłowa nazwa użytkownika lub hasło.");
             }
 
@@ -77,140 +76,11 @@ namespace ProjektInzynierski.Controllers
 
         // GET: Users/Logout
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Users");
-        }
-
-        // GET: Users/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users.FirstOrDefaultAsync(m => m.UserID == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user);
-        }
-
-        // GET: Users/Create
-        [AllowAnonymous]
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Users/Create
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserID,UserName,UserEmail,UserPhone,UserPassword,Role")] User user)
-        {
-            if (ModelState.IsValid)
-            {
-                // Haszowanie hasła przed zapisaniem w bazie danych
-                user.UserPassword = HashPassword(user.UserPassword);
-                _context.Add(user);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(user);
-        }
-
-        // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return View(user);
-        }
-
-        // POST: Users/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserID,UserName,UserEmail,UserPhone,UserPassword,Role")] User user)
-        {
-            if (id != user.UserID)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    if (!string.IsNullOrEmpty(user.UserPassword))
-                    {
-                        user.UserPassword = HashPassword(user.UserPassword);
-                    }
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UserExists(user.UserID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(user);
-        }
-
-        // GET: Users/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users.FirstOrDefaultAsync(m => m.UserID == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user);
-        }
-
-        // POST: Users/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var user = await _context.Users.FindAsync(id);
-            if (user != null)
-            {
-                _context.Users.Remove(user);
-                await _context.SaveChangesAsync();
-            }
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool UserExists(int id)
-        {
-            return _context.Users.Any(e => e.UserID == id);
         }
 
         // Funkcja haszująca hasło użytkownika
@@ -227,13 +97,8 @@ namespace ProjektInzynierski.Controllers
         // Funkcja weryfikująca hasło
         private bool VerifyPassword(string hashedPassword, string inputPassword)
         {
-            using (var sha256 = SHA256.Create())
-            {
-                var bytes = Encoding.UTF8.GetBytes(inputPassword);
-                var hash = sha256.ComputeHash(bytes);
-                var inputHashedPassword = Convert.ToBase64String(hash);
-                return hashedPassword == inputHashedPassword;
-            }
+            string inputHashedPassword = HashPassword(inputPassword); // Hashujemy hasło z formularza
+            return hashedPassword == inputHashedPassword; // Porównujemy hashe
         }
     }
 }
