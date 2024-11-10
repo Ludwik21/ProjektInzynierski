@@ -139,6 +139,21 @@ namespace ProjektInzynierski.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+        public async Task<IActionResult> ConfirmReservation(int id)
+        {
+            var reservation = await _context.Reservations.FindAsync(id);
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+
+            // Oznacz rezerwację jako potwierdzoną (status)
+            reservation.Status = "Confirmed";
+            await _context.SaveChangesAsync();
+
+            // Przekierowanie do płatności
+            return RedirectToAction("Create", "Payments", new { reservationId = id });
+        }
 
         private bool PaymentExists(int id)
         {

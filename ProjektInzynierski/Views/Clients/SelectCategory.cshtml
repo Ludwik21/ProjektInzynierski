@@ -2,15 +2,19 @@
 
 @{
     ViewData["Title"] = "Wybierz kategorię sprzętu";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Wybierz kategorię sprzętu</h2>
+<h2 class="text-center my-4">Wybierz kategorię sprzętu</h2>
 
-<ul class="list-group">
+<div class="d-flex flex-wrap justify-content-center">
     @foreach (var category in Model)
     {
-        <li class="list-group-item">
-            <a href="@Url.Action("SelectEquipment", "Clients", new { category = category })">@category</a>
-        </li>
+        <div class="card m-3" style="width: 18rem;">
+            <div class="card-body text-center">
+                <h5 class="card-title">@category</h5>
+                <a href="@Url.Action("SelectEquipment", "Equipments", new { category = category })" class="btn btn-primary">Wybierz</a>
+            </div>
+        </div>
     }
-</ul>
+</div>

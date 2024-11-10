@@ -137,6 +137,40 @@ namespace ProjektInzynierski.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        public async Task<IActionResult> SelectEquipment(string category)
+        {
+            if (string.IsNullOrEmpty(category))
+            {
+                return NotFound("Category not specified.");
+            }
+            var equipmentList = await _context.Equipment
+                .Where(e => e.Category == category)
+                .ToListAsync();
+            ViewData["Category"] = category;
+            return View(equipmentList);
+        }
+
+        public async Task<IActionResult> Reserve(int id)
+        {
+            var equipment = await _context.Equipment.FindAsync(id);
+            if (equipment == null || !equipment.AvailabilityStatus)
+            {
+                return NotFound("Sprzęt niedostępny do rezerwacji.");
+            }
+
+            // Oznacz jako zarezerwowany
+            equipment.AvailabilityStatus = false;
+            await _context.SaveChangesAsync();
+
+            // Przekierowanie do strony potwierdzenia rezerwacji
+            return RedirectToAction("ReservationConfirmed", new { id });
+        }
+
+        public IActionResult ReservationConfirmed(int id)
+        {
+            ViewData["EquipmentId"] = id;
+            return View();
+        }
 
         private bool EquipmentExists(int id)
         {

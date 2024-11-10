@@ -8,7 +8,7 @@ namespace ProjektInzynierski.Controllers
     {
         public IActionResult SelectCategory()
         {
-            var categories = new List<string> { "Kamery", "Oświetlenie", "Mikrofony" };
+            var categories = new List<string> { "Camera", "Light", "Accessory" };
             return View(categories); // To musi wskazywać na Views/Clients/SelectCategory.cshtml
         }
 
@@ -17,7 +17,8 @@ namespace ProjektInzynierski.Controllers
         {
             // Pobranie sprzętu dla danej kategorii
             var equipmentList = GetEquipmentByCategory(category);
-            return View(equipmentList); // To musi wskazywać na Views/Clients/SelectEquipment.cshtml
+            return View("~/Views/Equipments/SelectEquipment.cshtml", equipmentList);
+
         }
 
         [HttpPost]
@@ -37,8 +38,8 @@ namespace ProjektInzynierski.Controllers
         {
             return new List<Equipment>
             {
-                new Equipment { EquipmentID = 1, Name = "Kamera Sony", Category = category },
-                new Equipment { EquipmentID = 2, Name = "Kamera Canon", Category = category }
+                new Equipment { EquipmentID = 1, Name = "Camera Sony", Category = category },
+                new Equipment { EquipmentID = 2, Name = "Camera Canon", Category = category }
             };
         }
 

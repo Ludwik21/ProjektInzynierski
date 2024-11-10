@@ -7,7 +7,11 @@
         public int EquipmentID { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string Status { get; set; }
+        public string Status { get; set; } = "Oczekująca";
+
+        //Relacje
+        public Client Client { get; set; }
+        public Equipment Equipment { get; set; }
     }
 
 }

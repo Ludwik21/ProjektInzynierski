@@ -1,60 +1,71 @@
 ﻿@model IEnumerable<ProjektInzynierski.Models.Reservation>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Rezerwacje";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h2>Lista Rezerwacji</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<form method="get" asp-action="Index" class="mb-3">
+    <div class="form-group">
+        <label for="clientId">Klient:</label>
+        <select id="clientId" name="clientId" class="form-control">
+            <option value="">Wszyscy</option>
+            @foreach (var client in ViewBag.Clients)
+            {
+                <option value="@client.ClientID">@client.FirstName @client.LastName</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="equipmentId">Sprzęt:</label>
+        <select id="equipmentId" name="equipmentId" class="form-control">
+            <option value="">Wszystkie</option>
+            @foreach (var equipment in ViewBag.Equipments)
+            {
+                <option value="@equipment.EquipmentID">@equipment.Name</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="status">Status:</label>
+        <select id="status" name="status" class="form-control">
+            <option value="">Wszystkie</option>
+            <option value="Potwierdzona">Potwierdzona</option>
+            <option value="Oczekująca">Oczekująca</option>
+            <option value="Odrzucona">Odrzucona</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Filtruj</button>
+</form>
+
+<table class="table table-bordered">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ClientID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EquipmentID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EndDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th></th>
+            <th>@Html.DisplayNameFor(model => model.First().Client.FirstName)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Equipment.Name)</th>
+            <th>@Html.DisplayNameFor(model => model.First().StartDate)</th>
+            <th>@Html.DisplayNameFor(model => model.First().EndDate)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Status)</th>
+            <th>Akcje</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ClientID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EquipmentID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ReservationID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ReservationID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ReservationID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Client.FirstName @item.Client.LastName</td>
+                <td>@item.Equipment.Name</td>
+                <td>@item.StartDate.ToShortDateString()</td>
+                <td>@item.EndDate.ToShortDateString()</td>
+                <td>@item.Status</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ReservationID" class="btn btn-warning btn-sm">Edytuj</a>
+                    <a asp-action="Details" asp-route-id="@item.ReservationID" class="btn btn-info btn-sm">Szczegóły</a>
+                    <a asp-action="Delete" asp-route-id="@item.ReservationID" class="btn btn-danger btn-sm">Usuń</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

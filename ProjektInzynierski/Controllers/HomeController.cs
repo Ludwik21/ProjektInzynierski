@@ -3,6 +3,7 @@ using ProjektInzynierski.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using ProjektInzynierski.Models.ProjektContext;
+using System.Security.Claims;
 
 namespace ProjektInzynierski.Controllers
 {
@@ -28,14 +29,19 @@ namespace ProjektInzynierski.Controllers
             return View(model);
         }
 
+        [HttpGet]
         public IActionResult SelectRole(string role)
         {
             if (role == "users")
-                return RedirectToAction("Login", "Users");
-            if (role == "clients")
-                return RedirectToAction("SelectCategory", "Clients");
-
+            {
+                return RedirectToAction("Login", "Users"); // Przekierowanie do logowania użytkownika
+            }
+            else if (role == "clients")
+            {
+                return RedirectToAction("SelectCategory", "Clients"); // Przekierowanie do wyboru kategorii
+            }
             return RedirectToAction("Index");
         }
+
     }
 }

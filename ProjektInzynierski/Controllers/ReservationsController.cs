@@ -16,10 +16,34 @@ namespace ProjektInzynierski.Controllers
         }
 
         // GET: Reservations
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? clientId, int? equipmentId, string status)
         {
-            return View(await _context.Reservations.ToListAsync());
+            ViewBag.Clients = await _context.Clients.ToListAsync();
+            ViewBag.Equipments = await _context.Equipment.ToListAsync();
+
+            var query = _context.Reservations
+                .Include(r => r.Client)
+                .Include(r => r.Equipment)
+                .AsQueryable();
+
+            if (clientId.HasValue)
+            {
+                query = query.Where(r => r.ClientID == clientId);
+            }
+
+            if (equipmentId.HasValue)
+            {
+                query = query.Where(r => r.EquipmentID == equipmentId);
+            }
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                query = query.Where(r => r.Status == status);
+            }
+
+            return View(await query.ToListAsync());
         }
+
 
         // GET: Reservations/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -52,12 +76,30 @@ namespace ProjektInzynierski.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Sprawdzanie dostępności sprzętu
+                bool isAvailable = await CheckEquipmentAvailability(reservation.EquipmentID, reservation.StartDate, reservation.EndDate);
+                if (!isAvailable)
+                {
+                    ModelState.AddModelError("", "Sprzęt jest niedostępny w wybranym okresie.");
+                    return View(reservation);
+                }
+
                 _context.Add(reservation);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(reservation);
         }
+
+        private async Task<bool> CheckEquipmentAvailability(int equipmentId, DateTime startDate, DateTime endDate)
+        {
+            return !await _context.Reservations
+                .AnyAsync(r => r.EquipmentID == equipmentId &&
+                               ((startDate >= r.StartDate && startDate < r.EndDate) ||
+                                (endDate > r.StartDate && endDate <= r.EndDate) ||
+                                (startDate <= r.StartDate && endDate >= r.EndDate)));
+        }
+
 
         // GET: Reservations/Edit/5
         public async Task<IActionResult> Edit(int? id)

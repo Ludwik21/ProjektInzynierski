@@ -1,44 +1,18 @@
-﻿@model ProjektInzynierski.Models.Home
-
-@{
+﻿@{
     ViewData["Title"] = "Strona Główna";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="jumbotron text-center">
-    <h1 class="display-4">Witamy w naszej firmie!</h1>
+    <h1 class="display-4">Witamy w GearHive</h1>
     <p class="lead">Zarządzaj rezerwacjami sprzętu filmowego szybko i efektywnie.</p>
     <hr class="my-4">
     <p>Wybierz swoją rolę, aby kontynuować.</p>
 
     <form method="get" action="/Home/SelectRole">
         <div class="btn-group" role="group">
-            <button type="submit" name="role" value="users" class="btn btn-primary btn-lg">Jestem użytkownikiem</button>
+            <button type="submit" name="role" value="users" class="btn btn-primary btn-lg">Jestem pracownikiem</button>
             <button type="submit" name="role" value="clients" class="btn btn-secondary btn-lg">Jestem klientem</button>
         </div>
     </form>
-
 </div>
-
-@if (User.Identity.IsAuthenticated)
-{
-    <div class="list-group mt-4">
-        <h3 class="text-center">Panel zarządzania</h3>
-        <a href="/Equipments" class="list-group-item list-group-item-action">
-            Zarządzaj sprzętem <span class="badge badge-primary badge-pill">@Model.TotalEquipments</span>
-        </a>
-        <a href="/Reservations" class="list-group-item list-group-item-action">
-            Rezerwacje <span class="badge badge-secondary badge-pill">@Model.TotalReservations</span>
-        </a>
-        <a href="/Payments" class="list-group-item list-group-item-action">
-            Płatności <span class="badge badge-info badge-pill">@Model.TotalPayments</span>
-        </a>
-        <a href="/Users" class="list-group-item list-group-item-action">
-            Użytkownicy <span class="badge badge-success badge-pill">@Model.TotalUsers</span>
-        </a>
-    </div>
-}
-else
-{
-    <p class="mt-4 text-center">Zaloguj się jako użytkownik, aby zarządzać zasobami.</p>
-}

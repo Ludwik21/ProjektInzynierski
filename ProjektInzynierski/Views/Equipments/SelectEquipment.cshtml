@@ -1,22 +1,37 @@
-﻿@model List<ProjektInzynierski.Models.Equipment>
+﻿@model IEnumerable<ProjektInzynierski.Models.Equipment>
 
 @{
-    ViewData["Title"] = "Wybierz sprzęt";
+    ViewData["Title"] = "Select Equipment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Wybierz sprzęt z wybranej kategorii</h2>
+<h2 class="text-center my-4">Sprzęt z kategorii @ViewData["Category"]</h2>
 
-<ul class="list-group">
-    @foreach (var item in Model)
-    {
-        <li class="list-group-item">
-            <div class="d-flex justify-content-between">
-                <span>@item.Name - @item.Brand</span>
-                <form method="post" action="/Client/Reserve">
-                    <input type="hidden" name="equipmentId" value="@item.EquipmentID" />
-                    <button type="submit" class="btn btn-primary">Zarezerwuj</button>
-                </form>
+<div class="container">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Name</h5>
+                        <p class="card-text">Cena: @item.PricePerDay PLN/dzień</p>
+                        <p class="card-text">@item.Description</p>
+                        <p class="card-text">
+                            Dostępność:
+                            <strong class="@(item.AvailabilityStatus ? "text-success" : "text-danger")">
+                                @(item.AvailabilityStatus ? "Dostępny" : "Niedostępny")
+                            </strong>
+                        </p>
+                        <a href="@Url.Action("Reserve", "Equipments", new { id = item.EquipmentID })"
+                           class="btn btn-primary @(item.AvailabilityStatus ? "" : "disabled")">
+                            Zarezerwuj
+                        </a>
+                        <a asp-action="AddToCart" asp-controller="Cart" asp-route-equipmentId="@item.EquipmentID" asp-route-name="@item.Name" asp-route-pricePerDay="@item.PricePerDay" class="btn btn-primary">Dodaj do koszyka</a>
+
+                    </div>
+                </div>
             </div>
-        </li>
-    }
-</ul>
+        }
+    </div>
+</div>

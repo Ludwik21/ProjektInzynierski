@@ -4,7 +4,24 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<h1>Wybierz kategorię sprzętu</h1>
 
+<div class="btn-group mb-3">
+    <a asp-action="SelectEquipment" asp-route-category="Camera">Camera</a>
+    <a asp-action="Index" asp-route-category="Light" class="btn btn-primary">Light</a>
+    <a asp-action="Index" asp-route-category="Accessory" class="btn btn-primary">Accessory</a>
+</div>
+
+<table class="table">
+    <thead>
+        <!-- Kolumny tabeli -->
+    </thead>
+    <tbody>
+        <!-- Wiersze tabeli -->
+    </tbody>
+</table>
+
+ 
 <h1>Index</h1>
 
 <p>
