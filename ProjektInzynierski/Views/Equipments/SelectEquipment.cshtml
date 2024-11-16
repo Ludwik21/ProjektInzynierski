@@ -27,11 +27,40 @@
                            class="btn btn-primary @(item.AvailabilityStatus ? "" : "disabled")">
                             Zarezerwuj
                         </a>
-                        <a asp-action="AddToCart" asp-controller="Cart" asp-route-equipmentId="@item.EquipmentID" asp-route-name="@item.Name" asp-route-pricePerDay="@item.PricePerDay" class="btn btn-primary">Dodaj do koszyka</a>
-
+                        <form asp-action="AddToCart" asp-controller="CartItem" method="post" class="add-to-cart-form">
+                            <input type="hidden" name="equipmentId" value="@item.EquipmentID" />
+                            <input type="hidden" name="name" value="@item.Name" />
+                            <input type="hidden" name="pricePerDay" value="@item.PricePerDay" />
+                            <button type="submit" class="btn btn-primary">Add to Cart</button>
+                        </form>
                     </div>
                 </div>
             </div>
         }
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.add-to-cart-form').on('submit', function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '/CartItem/AddToCart',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        alert("Dodano do koszyka!");
+                    } else {
+                        alert("Wystąpił problem z dodaniem do koszyka.");
+                    }
+                },
+                error: function () {
+                    alert("Wystąpił błąd przy dodawaniu do koszyka.");
+                }
+            });
+        });
+    });
+</script>

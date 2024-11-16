@@ -1,4 +1,6 @@
-﻿namespace ProjektInzynierski.Models
+﻿using System.Collections.Generic;
+
+namespace ProjektInzynierski.Models
 {
     public class Client
     {
@@ -8,5 +10,7 @@
         public string Email { get; set; }
         public string Adress { get; set; }
         public DateTime RegistrationDate { get; set; }
+
+        public ICollection<Reservation> Reservations { get; set; } // Lista rezerwacji
     }
 }

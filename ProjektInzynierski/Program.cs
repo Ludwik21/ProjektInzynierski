@@ -8,6 +8,14 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ProjektContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddSession();
+builder.Services.AddDistributedMemoryCache(); // Wymagane do sesji
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Czas przechowywania sesji
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true; // Wymagane dla GDPR
+});
+
 
 // Konfiguracja autoryzacji
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -20,10 +28,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 var app = builder.Build();
 
 app.UseStaticFiles();
+app.UseSession(); // Sesja przed autoryzacj¹ i routingiem
 app.UseRouting();
-app.UseSession();  // Sesja przed autoryzacj¹ i routingiem
 app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllerRoute(
     name: "default",
