@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ProjektInzynierski.Models.Equipments>
+﻿@model IEnumerable<ProjektInzynierski.Models.Equipment>
 
 @{
     ViewData["Title"] = "Select Equipment";
@@ -23,9 +23,15 @@
                                 @(item.AvailabilityStatus ? "Dostępny" : "Niedostępny")
                             </strong>
                         </p>
+                        <a href="@Url.Action("Reserve", "Equipments", new { id = item.EquipmentID })"
+                           class="btn btn-primary @(item.AvailabilityStatus ? "" : "disabled")">
+                            Zarezerwuj
+                        </a>
                         <form asp-action="AddToCart" asp-controller="CartItem" method="post" class="add-to-cart-form">
                             <input type="hidden" name="equipmentId" value="@item.EquipmentID" />
-                            <button type="submit" class="btn btn-primary">Dodaj do koszyka</button>
+                            <input type="hidden" name="name" value="@item.Name" />
+                            <input type="hidden" name="pricePerDay" value="@item.PricePerDay" />
+                            <button type="submit" class="btn btn-primary">Add to Cart</button>
                         </form>
                     </div>
                 </div>
@@ -44,8 +50,12 @@
                 url: '/CartItem/AddToCart',
                 type: 'POST',
                 data: $(this).serialize(),
-                success: function () {
-                    alert("Dodano do koszyka!");
+                success: function (response) {
+                    if (response.success) {
+                        alert("Dodano do koszyka!");
+                    } else {
+                        alert("Wystąpił problem z dodaniem do koszyka.");
+                    }
                 },
                 error: function () {
                     alert("Wystąpił błąd przy dodawaniu do koszyka.");

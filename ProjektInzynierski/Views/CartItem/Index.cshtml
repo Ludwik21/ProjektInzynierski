@@ -2,6 +2,11 @@
 
 <h2>Twój koszyk</h2>
 
+@{
+    ViewData["Title"] = "Koszyk";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
 @if (Model.Any())
 {
     <table>
@@ -21,18 +26,17 @@
                     <td>@item.PricePerDay</td>
                     <td>@item.Quantity</td>
                     <td>
-                        <form asp-action="RemoveFromCart" method="post">
+                        <form asp-action="RemoveFromCart" method="post" class="remove-from-cart-form">
                             <input type="hidden" name="id" value="@item.EquipmentID" />
                             <button type="submit">Usuń</button>
                         </form>
-
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 
-    <form asp-action="CreateReservation" method="post">
+    <form asp-action="CreateReservation" method="post" id="create-reservation-form">
         <button type="submit">Zarezerwuj</button>
     </form>
 }
@@ -40,3 +44,50 @@ else
 {
     <p>Twój koszyk jest pusty.</p>
 }
+
+<!-- Sekcja skryptów -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Obsługa przycisku "Usuń"
+        $('.remove-from-cart-form').on('submit', function (e) {
+            e.preventDefault();
+
+            var form = $(this);
+            $.ajax({
+                url: form.attr('action'),
+                type: form.attr('method'),
+                data: form.serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        alert("Przedmiot usunięty z koszyka.");
+                        location.reload(); // Odśwież stronę
+                    }
+                },
+                error: function () {
+                    alert("Wystąpił problem podczas usuwania przedmiotu.");
+                }
+            });
+        });
+
+
+        // Obsługa przycisku "Zarezerwuj"
+        $('#create-reservation-form').on('submit', function (e) {
+            e.preventDefault();
+
+            var form = $(this);
+            $.ajax({
+                url: form.attr('action'),
+                type: form.attr('method'),
+                data: form.serialize(),
+                success: function () {
+                    alert("Rezerwacja została złożona!");
+                    window.location.href = '/Reservations/Index'; // Przekierowanie do widoku rezerwacji
+                },
+                error: function () {
+                    alert("Wystąpił problem podczas składania rezerwacji.");
+                }
+            });
+        });
+    });
+</script>

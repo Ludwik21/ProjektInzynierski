@@ -1,13 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace ProjektInzynierski.Models
+﻿namespace ProjektInzynierski.Models
 {
-    [NotMapped]
     public class CartItem
     {
-        public int EquipmentID { get; set; } // Powiązanie ze sprzętem
-        public string Name { get; set; } // Nazwa sprzętu
-        public decimal PricePerDay { get; set; } // Cena za dzień wynajmu
-        public int Quantity { get; set; } = 1; // Ilość dni wynajmu
+        public int EquipmentID { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public decimal PricePerDay { get; set; }
+        public int Quantity { get; set; }
+        public decimal TotalPrice => PricePerDay * Quantity;
     }
 }

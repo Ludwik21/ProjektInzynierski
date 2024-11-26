@@ -12,8 +12,9 @@ namespace ProjektInzynierski.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropPrimaryKey(
-                name: "PK_Equipment",
-                table: "Equipment");
+                 name: "PK_Equipment",
+                 table: "Equipment");
+
 
             migrationBuilder.DeleteData(
                 table: "Users",
@@ -43,6 +44,7 @@ namespace ProjektInzynierski.Migrations
                 table: "Reservations",
                 type: "nvarchar(max)",
                 nullable: true);
+
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_Equipments",

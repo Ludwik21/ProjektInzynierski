@@ -1,6 +1,6 @@
 ﻿namespace ProjektInzynierski.Models
 {
-    public class Equipments
+    public class Equipment
     {
         public int EquipmentID { get; set; }
         public string Category { get; set; }
