@@ -43,7 +43,21 @@ namespace ProjektInzynierski
                     options.AccessDeniedPath = "/Users/Login";
                 });
 
+            // Dodanie roli administratora w procesie logowania
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+            });
+
             var app = builder.Build();
+
+            // Dodanie inicjalizacji SeedData (dodanie admina do bazy)
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var context = services.GetRequiredService<ProjektContext>();
+                SeedData.Initialize(services, context);
+            }
 
             // Konfiguracja logowania i b³êdów
             if (app.Environment.IsDevelopment())
@@ -71,6 +85,13 @@ namespace ProjektInzynierski
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            // Dodanie trasy tylko dla administratora (dashboard)
+            app.MapControllerRoute(
+                name: "adminDashboard",
+                pattern: "admin/dashboard",
+                defaults: new { controller = "Users", action = "Dashboard" })
+                .RequireAuthorization("AdminOnly");  // Ochrona trasy
 
             // Uruchomienie aplikacji
             app.Run();

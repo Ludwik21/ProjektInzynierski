@@ -1,85 +1,91 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ProjektInzynierski.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace ProjektInzynierski.Controllers
 {
-    [Authorize]
     public class UsersController : Controller
     {
         private readonly ProjektContext _context;
+        private readonly ILogger<UsersController> _logger;
 
-        public UsersController(ProjektContext context)
+        public UsersController(ProjektContext context, ILogger<UsersController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: Users/Login
-        [AllowAnonymous]
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Login()
         {
-            return View(); // Zwraca widok Login.cshtml
+            return View(); // Zwraca widok logowania
         }
 
         // POST: Users/Login
-        [AllowAnonymous]
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(UserLoginModel model)
         {
             if (ModelState.IsValid)
             {
-                // Znajdź użytkownika na podstawie nazwy użytkownika
+                // Szukamy użytkownika po nazwie użytkownika
                 var user = await _context.Users
                     .FirstOrDefaultAsync(u => u.UserName == model.Username);
 
-                if (user != null && VerifyPassword(user.UserPassword, model.Password))
+                if (user != null)
                 {
-                    // Jeśli dane logowania są poprawne, logowanie użytkownika
-                    var claims = new List<Claim>
+                    // Sprawdzamy poprawność hasła
+                    if (VerifyPassword(user.UserPassword, model.Password))
                     {
-                        new Claim(ClaimTypes.Name, user.UserName),
-                        new Claim(ClaimTypes.Role, user.Role)
-                    };
+                        // Tworzymy tożsamość użytkownika
+                        var claims = new List<Claim>
+                        {
+                            new Claim(ClaimTypes.Name, user.UserName),
+                            new Claim(ClaimTypes.Role, user.Role)
+                        };
 
-                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                        // Logowanie użytkownika
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-                    // Przekierowanie do dashboardu
-                    return RedirectToAction("Dashboard", "Users");
+                        _logger.LogInformation("Użytkownik zalogował się pomyślnie: {UserName}", user.UserName);
+
+                        // Przekierowanie na dashboard, jeśli dane są poprawne
+                        return RedirectToAction("Dashboard", "Users");
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Nieprawidłowe hasło dla użytkownika: {UserName}", model.Username);
+                        ModelState.AddModelError("", "Nieprawidłowe hasło.");
+                    }
                 }
-
-                // Jeśli dane logowania są niepoprawne, wyświetl błąd
-                ModelState.AddModelError("", "Nieprawidłowa nazwa użytkownika lub hasło.");
+                else
+                {
+                    _logger.LogWarning("Nie znaleziono użytkownika: {UserName}", model.Username);
+                    ModelState.AddModelError("", "Nie znaleziono użytkownika.");
+                }
             }
 
-            // Zwracamy widok logowania, jeśli model jest niepoprawny
             return View(model);
         }
 
-        // GET: Users/Dashboard
-        public IActionResult Dashboard()
+        // Funkcja weryfikująca hasło
+        private bool VerifyPassword(string hashedPassword, string inputPassword)
         {
-            return View(); // Zwraca widok Dashboard.cshtml
-        }
-
-        // GET: Users/Logout
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "Users");
+            string inputHashedPassword = HashPassword(inputPassword);  // Haszujemy wprowadzone hasło
+            return hashedPassword == inputHashedPassword;  // Porównujemy hashe
         }
 
         // Funkcja haszująca hasło użytkownika
@@ -93,11 +99,20 @@ namespace ProjektInzynierski.Controllers
             }
         }
 
-        // Funkcja weryfikująca hasło
-        private bool VerifyPassword(string hashedPassword, string inputPassword)
+        // GET: Users/Dashboard
+        [Authorize(Roles = "Admin")]
+        public IActionResult Dashboard()
         {
-            string inputHashedPassword = HashPassword(inputPassword); // Hashujemy hasło z formularza
-            return hashedPassword == inputHashedPassword; // Porównujemy hashe
+            return View(); // Zwraca widok dashboardu dla administratora
+        }
+
+        // POST: Users/Logout
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "Users");
         }
     }
 }

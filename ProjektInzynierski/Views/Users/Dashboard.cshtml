@@ -1,9 +1,8 @@
 ﻿@{
-    ViewData["Title"] = "Panel zarządzania";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Panel Administratora";
 }
 
-<h2>Panel zarządzania</h2>
+<h2>Panel administratora</h2>
 
 <ul class="list-group">
     <li class="list-group-item">
@@ -15,4 +14,11 @@
     <li class="list-group-item">
         <a href="/Clients">Zarządzaj klientami</a>
     </li>
+    <li class="list-group-item">
+        <a href="/Users">Zarządzaj użytkownikami</a>
+    </li>
 </ul>
+
+<form asp-action="Logout" asp-controller="Users" method="post">
+    <button type="submit" class="btn btn-danger">Wyloguj się</button>
+</form>

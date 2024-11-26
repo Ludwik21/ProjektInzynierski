@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ProjektInzynierski.Models
+﻿namespace ProjektInzynierski.Models
 {
     public class User
     {
@@ -14,6 +11,9 @@ namespace ProjektInzynierski.Models
 
         // Relacja z rezerwacjami
         public List<Reservation> Reservations { get; set; }
-        public Client Client { get; set; }
+
+        // Relacja do klienta
+        public int ClientID { get; set; }   // Klucz obcy do klienta
+        public Client Client { get; set; }   // Nawiazanie do obiektu Client
     }
 }
