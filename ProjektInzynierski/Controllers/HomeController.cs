@@ -20,7 +20,7 @@ namespace ProjektInzynierski.Controllers
         {
             var model = new Home
             {
-                TotalEquipments = await _context.Equipment.CountAsync(),
+                TotalEquipments = await _context.Equipments.CountAsync(),
                 TotalReservations = await _context.Reservations.CountAsync(),
                 TotalPayments = await _context.Payments.CountAsync(),
                 TotalUsers = await _context.Users.CountAsync()

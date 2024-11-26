@@ -19,7 +19,7 @@ namespace ProjektInzynierski.Controllers
         public async Task<IActionResult> Index(int? clientId, int? equipmentId, string status)
         {
             ViewBag.Clients = await _context.Clients.ToListAsync();
-            ViewBag.Equipments = await _context.Equipment.ToListAsync();
+            ViewBag.Equipments = await _context.Equipments.ToListAsync();
 
             var query = _context.Reservations
                 .Include(r => r.Client)

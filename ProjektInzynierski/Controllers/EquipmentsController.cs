@@ -18,7 +18,7 @@ namespace ProjektInzynierski.Controllers
         // GET: Equipments
         public async Task<IActionResult> Index()
         {
-            var equipments = await _context.Equipment.ToListAsync();
+            var equipments = await _context.Equipments.ToListAsync();
             return View(equipments);
         }
 
@@ -30,7 +30,7 @@ namespace ProjektInzynierski.Controllers
                 return NotFound();
             }
 
-            var equipment = await _context.Equipment
+            var equipment = await _context.Equipments
                 .FirstOrDefaultAsync(m => m.EquipmentID == id);
             if (equipment == null)
             {
@@ -49,7 +49,7 @@ namespace ProjektInzynierski.Controllers
         // POST: Equipments/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EquipmentID,Category,Name,Brand,Description,AvailabilityStatus,PricePerDay")] Equipment equipment)
+        public async Task<IActionResult> Create([Bind("EquipmentID,Category,Name,Brand,Description,AvailabilityStatus,PricePerDay")] Equipments equipment)
         {
             if (ModelState.IsValid)
             {
@@ -68,7 +68,7 @@ namespace ProjektInzynierski.Controllers
                 return NotFound();
             }
 
-            var equipment = await _context.Equipment.FindAsync(id);
+            var equipment = await _context.Equipments.FindAsync(id);
             if (equipment == null)
             {
                 return NotFound();
@@ -79,7 +79,7 @@ namespace ProjektInzynierski.Controllers
         // POST: Equipments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EquipmentID,Category,Name,Brand,Description,AvailabilityStatus,PricePerDay")] Equipment equipment)
+        public async Task<IActionResult> Edit(int id, [Bind("EquipmentID,Category,Name,Brand,Description,AvailabilityStatus,PricePerDay")] Equipments equipment)
         {
             if (id != equipment.EquipmentID)
             {
@@ -117,7 +117,7 @@ namespace ProjektInzynierski.Controllers
                 return NotFound();
             }
 
-            var equipment = await _context.Equipment
+            var equipment = await _context.Equipments
                 .FirstOrDefaultAsync(m => m.EquipmentID == id);
             if (equipment == null)
             {
@@ -132,8 +132,8 @@ namespace ProjektInzynierski.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var equipment = await _context.Equipment.FindAsync(id);
-            _context.Equipment.Remove(equipment);
+            var equipment = await _context.Equipments.FindAsync(id);
+            _context.Equipments.Remove(equipment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -143,7 +143,7 @@ namespace ProjektInzynierski.Controllers
             {
                 return NotFound("Category not specified.");
             }
-            var equipmentList = await _context.Equipment
+            var equipmentList = await _context.Equipments
                 .Where(e => e.Category == category)
                 .ToListAsync();
             ViewData["Category"] = category;
@@ -152,7 +152,7 @@ namespace ProjektInzynierski.Controllers
 
         public async Task<IActionResult> Reserve(int id)
         {
-            var equipment = await _context.Equipment.FindAsync(id);
+            var equipment = await _context.Equipments.FindAsync(id);
             if (equipment == null || !equipment.AvailabilityStatus)
             {
                 return NotFound("Sprzęt niedostępny do rezerwacji.");
@@ -174,7 +174,7 @@ namespace ProjektInzynierski.Controllers
 
         private bool EquipmentExists(int id)
         {
-            return _context.Equipment.Any(e => e.EquipmentID == id);
+            return _context.Equipments.Any(e => e.EquipmentID == id);
         }
     }
 }

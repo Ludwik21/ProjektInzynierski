@@ -113,12 +113,12 @@ namespace ProjektInzynierski.Controllers
             return View(); // Widok oczekiwania na zatwierdzenie rezerwacji
         }
 
-        private List<Equipment> GetEquipmentByCategory(string category)
+        private List<Equipments> GetEquipmentByCategory(string category)
         {
-            return new List<Equipment>
+            return new List<Equipments>
             {
-                new Equipment { EquipmentID = 1, Name = "Camera Sony", Category = category },
-                new Equipment { EquipmentID = 2, Name = "Camera Canon", Category = category }
+                new Equipments { EquipmentID = 1, Name = "Camera Sony", Category = category },
+                new Equipments { EquipmentID = 2, Name = "Camera Canon", Category = category }
             };
         }
 

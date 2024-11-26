@@ -29,7 +29,7 @@ namespace ProjektInzynierski.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Equipment",
+                name: "Equipments",
                 columns: table => new
                 {
                     EquipmentID = table.Column<int>(type: "int", nullable: false)
@@ -104,7 +104,7 @@ namespace ProjektInzynierski.Migrations
                 name: "Clients");
 
             migrationBuilder.DropTable(
-                name: "Equipment");
+                name: "Equipments");
 
             migrationBuilder.DropTable(
                 name: "Payments");

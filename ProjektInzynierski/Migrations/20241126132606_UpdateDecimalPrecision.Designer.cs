@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjektInzynierski.Models.ProjektContext;
 
@@ -11,9 +12,11 @@ using ProjektInzynierski.Models.ProjektContext;
 namespace ProjektInzynierski.Migrations
 {
     [DbContext(typeof(ProjektContext))]
-    partial class ProjektContextModelSnapshot : ModelSnapshot
+    [Migration("20241126132606_UpdateDecimalPrecision")]
+    partial class UpdateDecimalPrecision
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,7 +75,7 @@ namespace ProjektInzynierski.Migrations
                     b.ToTable("Clients");
                 });
 
-            modelBuilder.Entity("ProjektInzynierski.Models.Equipments", b =>
+            modelBuilder.Entity("ProjektInzynierski.Models.Equipment", b =>
                 {
                     b.Property<int>("EquipmentID")
                         .ValueGeneratedOnAdd()
