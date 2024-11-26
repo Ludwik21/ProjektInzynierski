@@ -2,7 +2,6 @@
 using ProjektInzynierski.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
-using ProjektInzynierski.Models.ProjektContext;
 using System.Security.Claims;
 
 namespace ProjektInzynierski.Controllers
@@ -27,6 +26,10 @@ namespace ProjektInzynierski.Controllers
             };
 
             return View(model);
+        }
+        public IActionResult Error()
+        {
+            return View(); // Widok błędu
         }
 
         [HttpGet]

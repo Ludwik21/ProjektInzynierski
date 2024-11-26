@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjektInzynierski.Models;
-using ProjektInzynierski.Models.ProjektContext;
 using System.Threading.Tasks;
 
 namespace ProjektInzynierski.Controllers

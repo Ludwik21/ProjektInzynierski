@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using ProjektInzynierski.Models;
 using System.Collections.Generic;
-using ProjektInzynierski.Models.ProjektContext;
 using System.Threading.Tasks;
 
 namespace ProjektInzynierski.Controllers
@@ -10,15 +9,18 @@ namespace ProjektInzynierski.Controllers
     public class ClientsController : Controller
     {
         private readonly ProjektContext _context;
+
         public ClientsController(ProjektContext context)
         {
             _context = context;
         }
+
         public async Task<IActionResult> Index()
         {
             var clients = await _context.Clients.ToListAsync();
             return View(clients);
         }
+
         public IActionResult Create() => View();
 
         [HttpPost]
@@ -85,6 +87,7 @@ namespace ProjektInzynierski.Controllers
 
             return client == null ? NotFound() : View(client);
         }
+
         public IActionResult SelectCategory()
         {
             var categories = new List<string> { "Camera", "Light", "Accessory" };
@@ -97,7 +100,6 @@ namespace ProjektInzynierski.Controllers
             // Pobranie sprzętu dla danej kategorii
             var equipmentList = GetEquipmentByCategory(category);
             return View("~/Views/Equipments/SelectEquipment.cshtml", equipmentList);
-
         }
 
         [HttpPost]

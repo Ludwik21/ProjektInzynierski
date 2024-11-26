@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ProjektInzynierski.Models
 {
@@ -8,9 +9,12 @@ namespace ProjektInzynierski.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
-        public string Adress { get; set; }
-        public DateTime RegistrationDate { get; set; }
 
-        public ICollection<Reservation> Reservations { get; set; } // Lista rezerwacji
+        // Nowe właściwości
+        public string Address { get; set; }  // Dodane pole Adress
+        public DateTime RegistrationDate { get; set; }  // Dodane pole RegistrationDate
+
+        // Relacja: jeden klient może mieć wiele rezerwacji
+        public ICollection<Reservation> Reservations { get; set; }
     }
 }

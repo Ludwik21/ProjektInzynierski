@@ -1,41 +1,79 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using ProjektInzynierski.Models.ProjektContext;
+using ProjektInzynierski.Models;
+using Microsoft.Extensions.Logging;
 
-var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<ProjektContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddSession();
-builder.Services.AddDistributedMemoryCache(); // Wymagane do sesji
-builder.Services.AddSession(options =>
+namespace ProjektInzynierski
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Czas przechowywania sesji
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true; // Wymagane dla GDPR
-});
-
-
-// Konfiguracja autoryzacji
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
+    public class Program
     {
-        options.LoginPath = "/Users/Login";
-        options.AccessDeniedPath = "/Users/Login";
-    });
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
+            // Dodanie logowania do konsoli i debugowania
+            builder.Services.AddLogging(config =>
+            {
+                config.AddConsole(); // Logowanie w konsoli
+                config.AddDebug();   // Logowanie w trybie debug
+            });
 
-app.UseStaticFiles();
-app.UseSession(); // Sesja przed autoryzacj¹ i routingiem
-app.UseRouting();
-app.UseAuthentication();
-app.UseAuthorization();
+            // Dodanie us³ug MVC
+            builder.Services.AddControllersWithViews();
 
+            // Dodanie kontekstu bazy danych
+            builder.Services.AddDbContext<ProjektContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+            // Dodanie sesji
+            builder.Services.AddSession();
+            builder.Services.AddDistributedMemoryCache(); // Wymagane do sesji
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30); // Czas przechowywania sesji
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true; // Wymagane dla GDPR
+            });
 
-app.Run();
+            // Konfiguracja autoryzacji z ciasteczkami
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Users/Login";
+                    options.AccessDeniedPath = "/Users/Login";
+                });
+
+            var app = builder.Build();
+
+            // Konfiguracja logowania i b³êdów
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();  // W³¹cz szczegó³y b³êdów w trybie developerskim
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error"); // Globalna obs³uga b³êdów w trybie produkcyjnym
+                app.UseHsts();  // Wymuszenie HTTPS w produkcji
+            }
+
+            // U¿ywanie statycznych plików
+            app.UseStaticFiles();
+
+            // Sesja przed autoryzacj¹ i routingiem
+            app.UseSession();
+
+            // Autoryzacja i routing
+            app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            // Definicja domyœlnej trasy
+            app.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            // Uruchomienie aplikacji
+            app.Run();
+        }
+    }
+}

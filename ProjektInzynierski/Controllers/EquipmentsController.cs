@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjektInzynierski.Models;
-using ProjektInzynierski.Models.ProjektContext;
 using System.Threading.Tasks;
 
 namespace ProjektInzynierski.Controllers
@@ -150,10 +149,11 @@ namespace ProjektInzynierski.Controllers
             return View(equipmentList);
         }
 
+
         public async Task<IActionResult> Reserve(int id)
         {
             var equipment = await _context.Equipment.FindAsync(id);
-            if (equipment == null || !equipment.AvailabilityStatus)
+            if (equipment == null || !(equipment.AvailabilityStatus ?? false)) // Jeśli AvailabilityStatus jest null, traktujemy to jak false
             {
                 return NotFound("Sprzęt niedostępny do rezerwacji.");
             }
