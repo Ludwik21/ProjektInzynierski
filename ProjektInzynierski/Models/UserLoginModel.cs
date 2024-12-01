@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ProjektInzynierski.Models
 {
     public class UserLoginModel
     {
