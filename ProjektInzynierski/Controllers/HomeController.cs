@@ -2,7 +2,6 @@
 using ProjektInzynierski.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
-using System.Security.Claims;
 
 namespace ProjektInzynierski.Controllers
 {
@@ -15,36 +14,16 @@ namespace ProjektInzynierski.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        // Strona główna - domyślnie formularz logowania
+        [HttpGet]
+        public IActionResult Index()
         {
-            var model = new Home
-            {
-                TotalEquipments = await _context.Equipment.CountAsync(),
-                TotalReservations = await _context.Reservations.CountAsync(),
-                TotalPayments = await _context.Payments.CountAsync(),
-                TotalUsers = await _context.Users.CountAsync()
-            };
-
-            return View(model);
+            return RedirectToAction("Login", "Users");
         }
+
         public IActionResult Error()
         {
             return View(); // Widok błędu
         }
-
-        [HttpGet]
-        public IActionResult SelectRole(string role)
-        {
-            if (role == "users")
-            {
-                return RedirectToAction("Login", "Users"); // Przekierowanie do logowania użytkownika
-            }
-            else if (role == "clients")
-            {
-                return RedirectToAction("SelectCategory", "Clients"); // Przekierowanie do wyboru kategorii
-            }
-            return RedirectToAction("Index");
-        }
-
     }
 }

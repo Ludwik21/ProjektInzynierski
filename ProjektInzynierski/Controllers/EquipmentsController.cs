@@ -30,7 +30,7 @@ namespace ProjektInzynierski.Controllers
             }
 
             var equipment = await _context.Equipment
-                .FirstOrDefaultAsync(m => m.EquipmentID == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (equipment == null)
             {
                 return NotFound();
@@ -80,7 +80,7 @@ namespace ProjektInzynierski.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("EquipmentID,Category,Name,Brand,Description,AvailabilityStatus,PricePerDay")] Equipment equipment)
         {
-            if (id != equipment.EquipmentID)
+            if (id != equipment.Id)
             {
                 return NotFound();
             }
@@ -94,7 +94,7 @@ namespace ProjektInzynierski.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EquipmentExists(equipment.EquipmentID))
+                    if (!EquipmentExists(equipment.Id))
                     {
                         return NotFound();
                     }
@@ -117,7 +117,7 @@ namespace ProjektInzynierski.Controllers
             }
 
             var equipment = await _context.Equipment
-                .FirstOrDefaultAsync(m => m.EquipmentID == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (equipment == null)
             {
                 return NotFound();
@@ -174,7 +174,7 @@ namespace ProjektInzynierski.Controllers
 
         private bool EquipmentExists(int id)
         {
-            return _context.Equipment.Any(e => e.EquipmentID == id);
+            return _context.Equipment.Any(e => e.Id == id);
         }
     }
 }

@@ -1,14 +1,18 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pl">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - GearHive</title>
 
-    <!-- Bootstrap CSS and Icons -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <!-- Lokalny Bootstrap CSS -->
+    <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css" />
+
+    <!-- Ikony Bootstrap (jeśli potrzebne) -->
+    <link rel="stylesheet" href="/lib/bootstrap-icons/font/bootstrap-icons.css" />
+
+    <!-- Powiadomienie przeglądarki, że favicon nie jest używane -->
+    <link rel="icon" href="data:," />
 </head>
 <body>
     <header>
@@ -20,7 +24,9 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mr-auto">
                     @if ((ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index") ||
-                    (ViewContext.RouteData.Values["controller"]?.ToString() == "Clients" && (ViewContext.RouteData.Values["action"]?.ToString() == "SelectCategory" || ViewContext.RouteData.Values["action"]?.ToString() == "SelectEquipment")))
+                    (ViewContext.RouteData.Values["controller"]?.ToString() == "Clients" &&
+                    (ViewContext.RouteData.Values["action"]?.ToString() == "SelectCategory" ||
+                    ViewContext.RouteData.Values["action"]?.ToString() == "SelectEquipment")))
                     {
                         <li class="nav-item">
                             <a class="nav-link" href="/Home/About">O nas</a>
@@ -54,7 +60,7 @@
                     </li>
                 </ul>
 
-                <!-- Logout for authenticated users -->
+                <!-- Logout dla zalogowanych użytkowników -->
                 @if (User.Identity.IsAuthenticated)
                 {
                     <form asp-action="Logout" asp-controller="Users" method="post" class="form-inline">
@@ -65,26 +71,22 @@
         </nav>
     </header>
 
-    <div class="container">
+    <div class="container mt-4">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted mt-4">
         <div class="container">
             &copy; 2024 - GearHive - <a href="/Privacy">Privacy</a>
         </div>
     </footer>
 
-    <!-- jQuery and Validation Scripts -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+    <!-- Lokalny Bootstrap JS -->
+    <script src="/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Bootstrap Bundle with Popper -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
-
+    <!-- Renderowanie dodatkowych skryptów -->
     @RenderSection("Scripts", required: false)
 </body>
 </html>

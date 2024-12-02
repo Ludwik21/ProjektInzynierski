@@ -5,16 +5,14 @@ namespace ProjektInzynierski.Models
 {
     public class Client
     {
-        public int ClientID { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
+        public int Id { get; set; }
+        public string Address { get; set; }  // Pole Address
+        public DateTime RegistrationDate { get; set; }  // Pole RegistrationDate
 
-        // Nowe właściwości
-        public string Address { get; set; }  // Dodane pole Adress
-        public DateTime RegistrationDate { get; set; }  // Dodane pole RegistrationDate
+        // Relacja: jeden klient -> jeden użytkownik
+        public virtual ICollection<User> Users { get; set; }  // Dodane powiązanie z User
 
-        // Relacja: jeden klient może mieć wiele rezerwacji
-        public ICollection<Reservation> Reservations { get; set; }
+        // Relacja: jeden klient -> wiele rezerwacji
+        public virtual ICollection<Reservation> Reservations { get; set; }
     }
 }

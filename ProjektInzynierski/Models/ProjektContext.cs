@@ -1,75 +1,54 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProjektInzynierski.Models;
 using ProjektInzynierski.Controllers;
+using ProjektInzynierski.Models.Configuration;
 
 namespace ProjektInzynierski.Models
 {
     public class ProjektContext : DbContext
     {
-        public DbSet<Equipment> Equipment { get; set; }
-        public DbSet<Reservation> Reservations { get; set; }
-        public DbSet<Payment> Payments { get; set; }
-        public DbSet<User> Users { get; set; }  // Użytkownicy (klienci, administratorzy)
-        public DbSet<CartItem> CartItems { get; set; } // Koszyk przedmiotów (w pamięci)
-        public DbSet<Client> Clients { get; set; } // Klienci
-       
-
-        public ProjektContext(DbContextOptions<ProjektContext> options)
-            : base(options)
+        public ProjektContext(DbContextOptions<ProjektContext> options) : base(options)
         {
         }
 
+        public DbSet<User> Users { get; set; }
+        public DbSet<Client> Clients { get; set; }
+        public DbSet<Equipment> Equipment { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<Payment> Payments { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Koszyk CartItem nie jest mapowany na tabelę w bazie danych
-            modelBuilder.Entity<CartItem>().HasNoKey();
+            base.OnModelCreating(modelBuilder);
 
-            // Precyzja dla PricePerDay
-            modelBuilder.Entity<CartItem>()
-                .Property(c => c.PricePerDay)
-                .HasColumnType("decimal(18,2)");
+            modelBuilder.ApplyConfiguration( new ClientConfiguration());
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new ReservationConfiguration());
+            modelBuilder.ApplyConfiguration(new EquipmentConfiguration());
 
-            modelBuilder.Entity<Equipment>()
-                .Property(e => e.PricePerDay)
-                .HasColumnType("decimal(18,2)");
 
-            modelBuilder.Entity<Reservation>()
-                .Property(r => r.TotalAmount)
-                .HasColumnType("decimal(18,2)");
+            //// Relacja między CartItem a Equipment
+            //modelBuilder.Entity<CartItem>()
+            //    .HasOne(ci => ci.Equipment)
+            //    .WithMany(e => e.CartItems)
+            //    .HasForeignKey(ci => ci.EquipmentId);
 
+            //// Relacja między CartItem a Client
+            //modelBuilder.Entity<CartItem>()
+            //    .HasOne(ci => ci.Client)
+            //    .WithMany(c => c.CartItems)
+            //    .HasForeignKey(ci => ci.ClientId);
+
+
+            // Opcjonalne: dokładność kwot w tabeli Payment
             modelBuilder.Entity<Payment>()
                 .Property(p => p.Amount)
-                .HasColumnType("decimal(18,2)");
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<CartItem>().HasKey(x => x.Id);
+            modelBuilder.Entity<Payment>().HasKey(x => x.Id);
 
-            // Relacja między Reservation a Client
-            modelBuilder.Entity<Reservation>()
-                .HasOne(r => r.Client)               // Każda rezerwacja ma jednego klienta
-                .WithMany(c => c.Reservations)       // Jeden klient może mieć wiele rezerwacji
-                .HasForeignKey(r => r.ClientID);     // Klucz obcy w tabeli 'Reservation' wskazuje na ClientID
 
-            // Relacja między Equipment a Reservation
-            modelBuilder.Entity<Reservation>()
-                .HasOne(r => r.Equipment)            // Każda rezerwacja ma jeden sprzęt
-                .WithMany()                          // Sprzęt może mieć wiele rezerwacji
-                .HasForeignKey(r => r.EquipmentID);  // Klucz obcy w tabeli 'Reservation' wskazuje na EquipmentID
-
-            // Właściwości Address i RegistrationDate dla Clienta
-            modelBuilder.Entity<Client>()
-                .Property(c => c.Address)
-                .HasMaxLength(255)
-                .IsRequired(false); // Jeśli chcesz, by adres był opcjonalny, zmień 'IsRequired' na 'false'
-
-            modelBuilder.Entity<Client>()
-                .Property(c => c.RegistrationDate)
-                .HasColumnType("datetime2")
-                .HasDefaultValueSql("GETDATE()"); // Domyślna data rejestracji to bieżąca data i czas
-                                                  // Dodanie AvailabilityStatus do Equipment
-            modelBuilder.Entity<Equipment>()
-                .Property(e => e.AvailabilityStatus)
-                .HasMaxLength(50)
-                .IsRequired(false); // Jeśli jest opcjonalne, ustaw IsRequired(false)
-
-            base.OnModelCreating(modelBuilder);
         }
     }
 }

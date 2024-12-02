@@ -12,8 +12,8 @@ using ProjektInzynierski.Models;
 namespace ProjektInzynierski.Migrations
 {
     [DbContext(typeof(ProjektContext))]
-    [Migration("20241126132606_UpdateDecimalPrecision")]
-    partial class UpdateDecimalPrecision
+    [Migration("20241201161714_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,8 +27,11 @@ namespace ProjektInzynierski.Migrations
 
             modelBuilder.Entity("ProjektInzynierski.Models.CartItem", b =>
                 {
-                    b.Property<int>("EquipmentID")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -40,50 +43,41 @@ namespace ProjektInzynierski.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.ToTable("CartItem");
+                    b.HasKey("Id");
+
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("ProjektInzynierski.Models.Client", b =>
                 {
-                    b.Property<int>("ClientID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClientID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Adress")
+                    b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("ClientID");
+                    b.HasKey("Id");
 
                     b.ToTable("Clients");
                 });
 
             modelBuilder.Entity("ProjektInzynierski.Models.Equipment", b =>
                 {
-                    b.Property<int>("EquipmentID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EquipmentID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("AvailabilityStatus")
+                    b.Property<bool?>("AvailabilityStatus")
                         .HasColumnType("bit");
 
                     b.Property<string>("Brand")
@@ -105,20 +99,21 @@ namespace ProjektInzynierski.Migrations
                     b.Property<decimal>("PricePerDay")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("EquipmentID");
+                    b.HasKey("Id");
 
-                    b.ToTable("Equipments");
+                    b.ToTable("Equipment");
                 });
 
             modelBuilder.Entity("ProjektInzynierski.Models.Payment", b =>
                 {
-                    b.Property<int>("PaymentID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("PaymentDate")
@@ -127,29 +122,29 @@ namespace ProjektInzynierski.Migrations
                     b.Property<DateTime>("PaymentMethod")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ReservationID")
+                    b.Property<int>("ReservationId")
                         .HasColumnType("int");
 
-                    b.HasKey("PaymentID");
+                    b.HasKey("Id");
 
                     b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("ProjektInzynierski.Models.Reservation", b =>
                 {
-                    b.Property<int>("ReservationID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReservationID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ClientID")
+                    b.Property<int>("ClientId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EquipmentID")
+                    b.Property<int>("RequestingUserId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ReservationDate")
@@ -165,29 +160,46 @@ namespace ProjektInzynierski.Migrations
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("UserEmail")
-                        .HasColumnType("nvarchar(max)");
+                    b.HasKey("Id");
 
-                    b.HasKey("ReservationID");
-
-                    b.HasIndex("ClientID");
-
-                    b.HasIndex("EquipmentID");
+                    b.HasIndex("ClientId");
 
                     b.ToTable("Reservations");
                 });
 
-            modelBuilder.Entity("ProjektInzynierski.Models.User", b =>
+            modelBuilder.Entity("ProjektInzynierski.Models.ReservationItem", b =>
                 {
-                    b.Property<int>("UserID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("EquipmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReservationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EquipmentId");
+
+                    b.HasIndex("ReservationId");
+
+                    b.ToTable("ReservationItem");
+                });
+
+            modelBuilder.Entity("ProjektInzynierski.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ClientId")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserEmail")
                         .IsRequired()
@@ -205,7 +217,9 @@ namespace ProjektInzynierski.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserID");
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
 
                     b.ToTable("Users");
                 });
@@ -214,24 +228,57 @@ namespace ProjektInzynierski.Migrations
                 {
                     b.HasOne("ProjektInzynierski.Models.Client", "Client")
                         .WithMany("Reservations")
-                        .HasForeignKey("ClientID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProjektInzynierski.Models.Equipment", "Equipment")
-                        .WithMany()
-                        .HasForeignKey("EquipmentID")
+                        .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("ProjektInzynierski.Models.ReservationItem", b =>
+                {
+                    b.HasOne("ProjektInzynierski.Models.Equipment", "Equipment")
+                        .WithMany("ReservationItems")
+                        .HasForeignKey("EquipmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjektInzynierski.Models.Reservation", "Reservation")
+                        .WithMany("Items")
+                        .HasForeignKey("ReservationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Equipment");
+
+                    b.Navigation("Reservation");
+                });
+
+            modelBuilder.Entity("ProjektInzynierski.Models.User", b =>
+                {
+                    b.HasOne("ProjektInzynierski.Models.Client", "Client")
+                        .WithMany("Users")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Client");
                 });
 
             modelBuilder.Entity("ProjektInzynierski.Models.Client", b =>
                 {
                     b.Navigation("Reservations");
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("ProjektInzynierski.Models.Equipment", b =>
+                {
+                    b.Navigation("ReservationItems");
+                });
+
+            modelBuilder.Entity("ProjektInzynierski.Models.Reservation", b =>
+                {
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

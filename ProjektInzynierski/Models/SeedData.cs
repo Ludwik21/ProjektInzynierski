@@ -1,60 +1,35 @@
-﻿using ProjektInzynierski.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
+﻿using Microsoft.AspNetCore.Identity;
+using ProjektInzynierski.Models;
 
-namespace ProjektInzynierski.Models
+public static class SeedData
 {
-    public static class SeedData
+    public static void Initialize(IServiceProvider serviceProvider, ProjektContext context)
     {
-        public static void Initialize(IServiceProvider serviceProvider, ProjektContext context)
+        if (!context.Users.Any())
         {
-            // Sprawdzamy, czy w bazie danych już istnieją dane użytkowników
-            if (context.Users.Any())
-            {
-                return;   // Baza już zawiera użytkowników, więc nie dodajemy nowych
-            }
+            var passwordHasher = new PasswordHasher<User>();
 
-            // Tworzymy nowego klienta (jeśli nie istnieje)
-            var adminClient = new Client
-            {
-                FirstName = "Admin",
-                LastName = "Admin",
-                Email = "admin@admin.com",
-                Address = "Admin Address",  // Zmieniamy na odpowiednią wartość
-                RegistrationDate = DateTime.Now
-            };
-            context.Clients.Add(adminClient);
-            context.SaveChanges();  // Zapisujemy klienta w bazie danych
-
-            // Tworzymy nowego administratora
             var adminUser = new User
             {
                 UserName = "admin",
                 UserEmail = "admin@admin.com",
-                UserPhone = "123456789",  // Numer telefonu dla admina
-                UserPassword = "hashedPasswordHere",  // Pamiętaj, żeby zahaszować hasło
-                Role = "Admin",
-                ClientID = adminClient.ClientID  // Powiązanie z klientem
+                UserPhone = "123456789",
+                UserPassword = passwordHasher.HashPassword(null, "Admin@123") // Hashowanie hasła
             };
 
-            // Dodajemy użytkownika do bazy danych
-            context.Users.Add(adminUser);
-            context.SaveChanges();  // Zapisujemy użytkownika w bazie danych
-        }
-
-
-
-        // Funkcja haszująca hasło użytkownika
-        private static string HashPassword(string password)
-        {
-            using (var sha256 = SHA256.Create())
+            var adminClient = new Client
             {
-                var bytes = Encoding.UTF8.GetBytes(password);
-                var hash = sha256.ComputeHash(bytes);
-                return Convert.ToBase64String(hash);
-            }
+
+                Address = "Admin Address",
+                RegistrationDate = DateTime.UtcNow
+            };
+
+            // Powiązanie User z Client
+            adminUser.Client = adminClient;
+
+            context.Users.Add(adminUser);
+            context.Clients.Add(adminClient);
+            context.SaveChanges();
         }
     }
 }

@@ -32,7 +32,7 @@ else
                     <td>@item.TotalPrice.ToString("C")</td>
                     <td>
                         <form asp-action="RemoveFromCart" asp-controller="CartItem" method="post">
-                            <input type="hidden" name="equipmentId" value="@item.EquipmentID" />
+                            <input type="hidden" name="equipmentId" value="@item.Id" />
                             <button type="submit" class="btn btn-danger btn-sm">Usuń</button>
                         </form>
                     </td>

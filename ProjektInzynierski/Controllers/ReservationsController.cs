@@ -24,18 +24,19 @@ namespace ProjektInzynierski.Controllers
 
             var query = _context.Reservations
                 .Include(r => r.Client)
-                .Include(r => r.Equipment)
+                .Include(r => r.Items)
+                .ThenInclude(i => i.Equipment)
                 .AsQueryable(); // Używamy IQueryable do dynamicznego budowania zapytania
 
             // Dodanie filtrów, jeśli użytkownik je podał
             if (clientId.HasValue)
             {
-                query = query.Where(r => r.ClientID == clientId);
+                query = query.Where(r => r.ClientId == clientId);
             }
 
             if (equipmentId.HasValue)
             {
-                query = query.Where(r => r.EquipmentID == equipmentId);
+                query = query.Where(r => r.Items.Any(x => x.EquipmentId == equipmentId));
             }
 
             if (!string.IsNullOrEmpty(status))
@@ -57,7 +58,7 @@ namespace ProjektInzynierski.Controllers
             }
 
             var reservation = await _context.Reservations
-                .FirstOrDefaultAsync(m => m.ReservationID == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (reservation == null)
             {
                 return NotFound();
@@ -79,13 +80,13 @@ namespace ProjektInzynierski.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Sprawdzanie dostępności sprzętu
-                bool isAvailable = await CheckEquipmentAvailability(reservation.EquipmentID, reservation.StartDate, reservation.EndDate);
-                if (!isAvailable)
-                {
-                    ModelState.AddModelError("", "Sprzęt jest niedostępny w wybranym okresie.");
-                    return View(reservation);
-                }
+                //// Sprawdzanie dostępności sprzętu
+                //bool isAvailable = await CheckEquipmentAvailability(reservation.EquipmentID, reservation.StartDate, reservation.EndDate);
+                //if (!isAvailable)
+                //{
+                //    ModelState.AddModelError("", "Sprzęt jest niedostępny w wybranym okresie.");
+                //    return View(reservation);
+                //}
 
                 // Dodanie nowej rezerwacji do bazy
                 _context.Add(reservation);
@@ -100,11 +101,12 @@ namespace ProjektInzynierski.Controllers
         // Sprawdzanie dostępności sprzętu w zadanym okresie
         private async Task<bool> CheckEquipmentAvailability(int equipmentId, DateTime startDate, DateTime endDate)
         {
-            return !await _context.Reservations
-                .AnyAsync(r => r.EquipmentID == equipmentId &&
-                               ((startDate >= r.StartDate && startDate < r.EndDate) ||
-                                (endDate > r.StartDate && endDate <= r.EndDate) ||
-                                (startDate <= r.StartDate && endDate >= r.EndDate)));
+            return true;
+            //return !await _context.Reservations
+            //    .AnyAsync(r => r.EquipmentID == equipmentId &&
+            //                   ((startDate >= r.StartDate && startDate < r.EndDate) ||
+            //                    (endDate > r.StartDate && endDate <= r.EndDate) ||
+            //                    (startDate <= r.StartDate && endDate >= r.EndDate)));
         }
 
         // GET: Reservations/Edit/5
@@ -128,7 +130,7 @@ namespace ProjektInzynierski.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ReservationID,ClientID,EquipmentID,StartDate,EndDate,Status")] Reservation reservation)
         {
-            if (id != reservation.ReservationID)
+            if (id != reservation.Id)
             {
                 return NotFound();
             }
@@ -142,7 +144,7 @@ namespace ProjektInzynierski.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ReservationExists(reservation.ReservationID))
+                    if (!ReservationExists(reservation.Id))
                     {
                         return NotFound();
                     }
@@ -165,7 +167,7 @@ namespace ProjektInzynierski.Controllers
             }
 
             var reservation = await _context.Reservations
-                .FirstOrDefaultAsync(m => m.ReservationID == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (reservation == null)
             {
                 return NotFound();
@@ -191,7 +193,7 @@ namespace ProjektInzynierski.Controllers
         // Sprawdzanie, czy rezerwacja istnieje
         private bool ReservationExists(int id)
         {
-            return _context.Reservations.Any(e => e.ReservationID == id);
+            return _context.Reservations.Any(e => e.Id == id);
         }
     }
 }

@@ -14,14 +14,14 @@ namespace ProjektInzynierski.Controllers
         {
             var cart = HttpContext.Session.GetObjectFromJson<List<CartItem>>("Cart") ?? new List<CartItem>();
 
-            var existingItem = cart.FirstOrDefault(i => i.EquipmentID == equipmentId);
+            var existingItem = cart.FirstOrDefault(i => i.Id == equipmentId);
             if (existingItem != null)
             {
                 existingItem.Quantity++;
             }
             else
             {
-                cart.Add(new CartItem { EquipmentID = equipmentId, Name = name, PricePerDay = pricePerDay, Quantity = 1 });
+                cart.Add(new CartItem { Id = equipmentId, Name = name, PricePerDay = pricePerDay, Quantity = 1 });
             }
 
             HttpContext.Session.SetObjectAsJson("Cart", cart);
@@ -33,7 +33,7 @@ namespace ProjektInzynierski.Controllers
         public IActionResult RemoveFromCart(int id)
         {
             var cart = HttpContext.Session.GetObjectFromJson<List<CartItem>>("Cart") ?? new List<CartItem>();
-            var itemToRemove = cart.FirstOrDefault(c => c.EquipmentID == id);
+            var itemToRemove = cart.FirstOrDefault(c => c.Id == id);
 
             if (itemToRemove != null)
             {

@@ -25,12 +25,12 @@
                                 @(item.AvailabilityStatus == null ? "Brak statusu" : (item.AvailabilityStatus.Value ? "Dostępny" : "Niedostępny"))
                             </strong>
                         </p>
-                        <a href="@Url.Action("Reserve", "Equipments", new { id = item.EquipmentID })"
+                        <a href="@Url.Action("Reserve", "Equipments", new { id = item.Id })"
                            class="btn btn-primary @(item.AvailabilityStatus == null || !item.AvailabilityStatus.Value ? "disabled" : "")">
                             Zarezerwuj
                         </a>
                         <form asp-action="AddToCart" asp-controller="CartItem" method="post" class="add-to-cart-form">
-                            <input type="hidden" name="equipmentId" value="@item.EquipmentID" />
+                            <input type="hidden" name="equipmentId" value="@item.Id" />
                             <input type="hidden" name="name" value="@item.Name" />
                             <input type="hidden" name="pricePerDay" value="@item.PricePerDay" />
                             <button type="submit" class="btn btn-primary">Add to Cart</button>

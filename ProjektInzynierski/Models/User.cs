@@ -2,18 +2,17 @@
 {
     public class User
     {
-        public int UserID { get; set; }
-        public string UserName { get; set; }
-        public string UserEmail { get; set; }
-        public string UserPhone { get; set; }
-        public string UserPassword { get; set; }
-        public string Role { get; set; } // Rola użytkownika (np. "Admin", "Client")
-
-        // Relacja z rezerwacjami
-        public List<Reservation> Reservations { get; set; }
+        public int Id { get; set; }
+        public string UserName { get; set; } = string.Empty;
+        public string UserEmail { get; set; } = string.Empty;
+        public string UserPhone { get; set; } = string.Empty;
+        public string UserPassword { get; set; } = string.Empty;
 
         // Relacja do klienta
-        public int ClientID { get; set; }   // Klucz obcy do klienta
-        public Client Client { get; set; }   // Nawiazanie do obiektu Client
+        public virtual Client? Client { get; set; } // Nawiazanie do obiektu Client
+        public int? ClientId { get; set; }
+
+        //Domyślna rola to klient
+        public Role UserRole { get; set; } = Role.Client;
     }
 }

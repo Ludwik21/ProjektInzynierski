@@ -29,7 +29,7 @@ namespace ProjektInzynierski.Controllers
             }
 
             var payment = await _context.Payments
-                .FirstOrDefaultAsync(m => m.PaymentID == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (payment == null)
             {
                 return NotFound();
@@ -79,7 +79,7 @@ namespace ProjektInzynierski.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("PaymentID,ReservationID,Amount,PaymentMethod,PaymentDate")] Payment payment)
         {
-            if (id != payment.PaymentID)
+            if (id != payment.Id)
             {
                 return NotFound();
             }
@@ -93,7 +93,7 @@ namespace ProjektInzynierski.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PaymentExists(payment.PaymentID))
+                    if (!PaymentExists(payment.Id))
                     {
                         return NotFound();
                     }
@@ -116,7 +116,7 @@ namespace ProjektInzynierski.Controllers
             }
 
             var payment = await _context.Payments
-                .FirstOrDefaultAsync(m => m.PaymentID == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (payment == null)
             {
                 return NotFound();
@@ -156,7 +156,7 @@ namespace ProjektInzynierski.Controllers
 
         private bool PaymentExists(int id)
         {
-            return _context.Payments.Any(e => e.PaymentID == id);
+            return _context.Payments.Any(e => e.Id == id);
         }
     }
 }
