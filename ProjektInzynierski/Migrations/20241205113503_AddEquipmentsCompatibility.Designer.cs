@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjektInzynierski.Models;
 
@@ -11,9 +12,11 @@ using ProjektInzynierski.Models;
 namespace ProjektInzynierski.Migrations
 {
     [DbContext(typeof(ProjektContext))]
-    partial class ProjektContextModelSnapshot : ModelSnapshot
+    [Migration("20241205113503_AddEquipmentsCompatibility")]
+    partial class AddEquipmentsCompatibility
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

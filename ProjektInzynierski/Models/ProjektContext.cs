@@ -26,6 +26,7 @@ namespace ProjektInzynierski.Models
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new ReservationConfiguration());
             modelBuilder.ApplyConfiguration(new EquipmentConfiguration());
+            modelBuilder.ApplyConfiguration(new EquipmentCompatibilityConfiguration());
 
 
             //// Relacja między CartItem a Equipment

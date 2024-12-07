@@ -14,6 +14,12 @@
 
         public virtual List<ReservationItem> ReservationItems { get; set; }
 
+        //Lista sprzętów, które są kompatybilne z tym sprzętem
+        public virtual List<EquipmentCompatibility> CompatibleEquipments { get; set; }
+
+        // Lista sprzętó, które mają ten sprzęt jako kompatybilny
+        public virtual List<EquipmentCompatibility> IsCompatibleWith { get; set; }
+
     }
 
 }
