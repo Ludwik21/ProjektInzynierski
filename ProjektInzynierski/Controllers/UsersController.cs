@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using ProjektInzynierski.Application.Services;
 
 namespace ProjektInzynierski.Controllers
 {
@@ -13,7 +14,7 @@ namespace ProjektInzynierski.Controllers
         private readonly ProjektContext _context;
         private readonly IPasswordHasher<User> _passwordHasher;
 
-        public UsersController(ProjektContext context, IPasswordHasher<User> passwordHasher)
+        public UsersController(ProjektContext context, IPasswordHasher<User> passwordHasher, IEquipmentService equipmentService)
         {
             _context = context;
             _passwordHasher = passwordHasher;

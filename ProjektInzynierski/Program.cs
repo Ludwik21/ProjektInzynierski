@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ProjektInzynierski.Models;
 using Microsoft.Extensions.Logging;
+using ProjektInzynierski.Application.Services;
+using ProjektInzynierski.Infrastructure.Repositories;
+using ProjektInzynierski.Infrastructure.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +49,10 @@ builder.Services.AddDbContext<ProjektContext>(options =>
 
 // Dodanie IPasswordHasher do kontenera DI
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddScoped<IEquipmentService, EquipmentService>();
+builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+builder.Services.AddScoped<IClientRepository, ClientRepository>();
 
 // Konfiguracja sesji
 builder.Services.AddDistributedMemoryCache();

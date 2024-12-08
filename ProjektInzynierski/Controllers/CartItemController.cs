@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ProjektInzynierski.Models;
 using ProjektInzynierski.Extensions;
 using System.Collections.Generic;
 using System.Linq;

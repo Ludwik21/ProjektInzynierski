@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ProjektInzynierski.Models.Equipment>
+﻿@model IEnumerable<ProjektInzynierski.Application.Models.Equipment.EquipmentDto>
 
 @{
     ViewData["Title"] = "Select Equipment";
@@ -21,12 +21,12 @@
                         <p class="card-text">@item.Description</p>
                         <p class="card-text">
                             Dostępność:
-                            <strong class="@(item.AvailabilityStatus == null ? "text-warning" : (item.AvailabilityStatus.Value ? "text-success" : "text-danger"))">
-                                @(item.AvailabilityStatus == null ? "Brak statusu" : (item.AvailabilityStatus.Value ? "Dostępny" : "Niedostępny"))
+                            <strong class="@(item.IsAvailable == null ? "text-warning" : (item.IsAvailable ? "text-success" : "text-danger"))">
+                                @(item.IsAvailable == null ? "Brak statusu" : (item.IsAvailable ? "Dostępny" : "Niedostępny"))
                             </strong>
                         </p>
                         <a href="@Url.Action("Reserve", "Equipments", new { id = item.Id })"
-                           class="btn btn-primary @(item.AvailabilityStatus == null || !item.AvailabilityStatus.Value ? "disabled" : "")">
+                           class="btn btn-primary @(item.IsAvailable == null || !item.IsAvailable ? "disabled" : "")">
                             Zarezerwuj
                         </a>
                         <form asp-action="AddToCart" asp-controller="CartItem" method="post" class="add-to-cart-form">

@@ -3,24 +3,25 @@ using Microsoft.EntityFrameworkCore;
 using ProjektInzynierski.Models;
 using System.Threading.Tasks;
 using System.Linq;
+using ProjektInzynierski.Application.Services;
 
 namespace ProjektInzynierski.Controllers
 {
     public class ReservationsController : Controller
     {
-        private readonly ProjektContext _context;
+        private readonly IReservationService _reservationService;
 
-        public ReservationsController(ProjektContext context)
+        public ReservationsController(IReservationService reservationService)
         {
-            _context = context;
+            _reservationService = reservationService;
         }
 
         // GET: Reservations
-        public async Task<IActionResult> Index(int? clientId, int? equipmentId, string status)
+        public async Task<IActionResult> Index(Guid? clientId, int? equipmentId, string status)
         {
             // Pobierz listy klientów i sprzętów, które będą użyte w filtrach
             ViewBag.Clients = await _context.Clients.ToListAsync();
-            ViewBag.Equipments = await _context.Equipment.ToListAsync();
+            //ViewBag.Equipments = await _context.Equipment.ToListAsync();
 
             var query = _context.Reservations
                 .Include(r => r.Client)

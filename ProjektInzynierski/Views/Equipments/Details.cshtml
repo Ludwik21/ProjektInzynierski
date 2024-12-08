@@ -1,55 +1,11 @@
-﻿@model ProjektInzynierski.Models.Equipment
+﻿@model EquipmentDto
 
-@{
-    ViewData["Title"] = "Details";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+<h1>Szczegóły sprzętu</h1>
+<p><strong>Nazwa:</strong> @Model.Name</p>
+<p><strong>Kategoria:</strong> @Model.Category</p>
+<p><strong>Marka:</strong> @Model.Brand</p>
+<p><strong>Opis:</strong> @Model.Description</p>
+<p><strong>Cena za dzień:</strong> @Model.PricePerDay @Model.PricePerDayCurrency</p>
+<p><strong>Dostępny:</strong> @(Model.IsAvailable ? "Tak" : "Nie")</p>
 
-<h1>Details</h1>
-
-<div>
-    <h4>Equipment</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Category)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Category)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Brand)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Brand)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AvailabilityStatus)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AvailabilityStatus)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PricePerDay)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PricePerDay)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+<a href="@Url.Action("Index", "Equipments")">Powrót do listy</a>

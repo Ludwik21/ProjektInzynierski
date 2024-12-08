@@ -1,43 +1,44 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ProjektInzynierski.Models;
-using System.Threading.Tasks;
+using ProjektInzynierski.Application.Models.Equipment;
+using ProjektInzynierski.Application.Services;
+using ProjektInzynierski.Domain.Entities.Equipments;
+
 
 namespace ProjektInzynierski.Controllers
 {
     public class EquipmentsController : Controller
     {
-        private readonly ProjektContext _context;
+        private readonly IEquipmentService _equipmentService;
 
-        public EquipmentsController(ProjektContext context)
+
+        public EquipmentsController(IEquipmentService equipmentService)
         {
-            _context = context;
+
+            _equipmentService = equipmentService;
         }
+
 
         // GET: Equipments
         public async Task<IActionResult> Index()
         {
-            var equipments = await _context.Equipment.ToListAsync();
+            var equipments = await _equipmentService.GetEquipments();
             return View(equipments);
         }
 
-        // GET: Equipments/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var equipment = await _context.Equipment
-                .FirstOrDefaultAsync(m => m.Id == id);
+        // GET: Equipments/Details/5
+        public async Task<IActionResult> Details(Guid id)
+        {
+            var equipment = await _equipmentService.GetEquipment(id);
             if (equipment == null)
             {
                 return NotFound();
             }
 
+
             return View(equipment);
         }
+
 
         // GET: Equipments/Create
         public IActionResult Create()
@@ -45,29 +46,25 @@ namespace ProjektInzynierski.Controllers
             return View();
         }
 
+
         // POST: Equipments/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EquipmentID,Category,Name,Brand,Description,AvailabilityStatus,PricePerDay")] Equipment equipment)
+        public async Task<IActionResult> Create([Bind("EquipmentID,Category,Name,Brand,Description,AvailabilityStatus,PricePerDay")] CreateEquipmentDto equipment)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(equipment);
-                await _context.SaveChangesAsync();
+                await _equipmentService.AddEquipment(equipment);
                 return RedirectToAction(nameof(Index));
             }
             return View(equipment);
         }
 
-        // GET: Equipments/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var equipment = await _context.Equipment.FindAsync(id);
+        // GET: Equipments/Edit/5
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            var equipment = await _equipmentService.GetEquipment(id);
             if (equipment == null)
             {
                 return NotFound();
@@ -75,106 +72,71 @@ namespace ProjektInzynierski.Controllers
             return View(equipment);
         }
 
+
         // POST: Equipments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EquipmentID,Category,Name,Brand,Description,AvailabilityStatus,PricePerDay")] Equipment equipment)
+        public async Task<IActionResult> Edit(Guid id, [Bind("EquipmentID,Category,Name,Brand,Description,AvailabilityStatus,PricePerDay")] EquipmentDto equipment)
         {
             if (id != equipment.Id)
             {
                 return NotFound();
             }
 
+
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(equipment);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!EquipmentExists(equipment.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await _equipmentService.EditEquipment(equipment);
                 return RedirectToAction(nameof(Index));
             }
             return View(equipment);
         }
 
+
         // GET: Equipments/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var equipment = await _context.Equipment
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (equipment == null)
-            {
-                return NotFound();
-            }
-
-            return View(equipment);
+            await _equipmentService.DeleteEquipment(id);
+            return RedirectToAction(nameof(Index));
         }
+
 
         // POST: Equipments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var equipment = await _context.Equipment.FindAsync(id);
-            _context.Equipment.Remove(equipment);
-            await _context.SaveChangesAsync();
+            await _equipmentService.DeleteEquipment(id);
             return RedirectToAction(nameof(Index));
         }
-        public async Task<IActionResult> SelectEquipment(string category)
+
+
+        public async Task<IActionResult> SelectEquipment(EquipmentCategory category)
         {
-            if (string.IsNullOrEmpty(category))
-            {
-                return NotFound("Category not specified.");
-            }
-            var equipmentList = await _context.Equipment
-                .Where(e => e.Category == category)
-                .ToListAsync();
+            var equipmentList = await _equipmentService.GetEquipmentsByCategory(category);
             ViewData["Category"] = category;
+
+
             return View(equipmentList);
         }
 
 
-        public async Task<IActionResult> Reserve(int id)
-        {
-            var equipment = await _context.Equipment.FindAsync(id);
-            if (equipment == null || !(equipment.AvailabilityStatus ?? false)) // Jeśli AvailabilityStatus jest null, traktujemy to jak false
-            {
-                return NotFound("Sprzęt niedostępny do rezerwacji.");
-            }
 
-            // Oznacz jako zarezerwowany
-            equipment.AvailabilityStatus = false;
-            await _context.SaveChangesAsync();
+
+        public async Task<IActionResult> Reserve(Guid id)
+        {
+            await _equipmentService.ReserveEquipment(id);
+
 
             // Przekierowanie do strony potwierdzenia rezerwacji
             return RedirectToAction("ReservationConfirmed", new { id });
         }
 
-        public IActionResult ReservationConfirmed(int id)
+
+        public IActionResult ReservationConfirmed(Guid id)
         {
             ViewData["EquipmentId"] = id;
             return View();
-        }
-
-        private bool EquipmentExists(int id)
-        {
-            return _context.Equipment.Any(e => e.Id == id);
         }
     }
 }

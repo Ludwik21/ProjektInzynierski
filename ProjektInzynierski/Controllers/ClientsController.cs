@@ -1,21 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProjektInzynierski.Models;
+using ProjektInzynierski.Application.Models.Clients;
+using ProjektInzynierski.Application.Services;
 
 namespace ProjektInzynierski.Controllers
 {
     public class ClientsController : Controller
     {
-        private readonly ProjektContext _context;
+        private readonly IClientService _clientService;
 
-        public ClientsController(ProjektContext context)
+        public ClientsController(IClientService clientService)
         {
-            _context = context;
+            _clientService = clientService;
         }
 
         public async Task<IActionResult> Index()
         {
-            var clients = await _context.Clients.ToListAsync();
+            var clients = await _clientService.GetClients();
             return View(clients);
         }
 
@@ -26,20 +27,19 @@ namespace ProjektInzynierski.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Client client)
+        public async Task<IActionResult> Create(CreateClientDto client)
         {
             if (ModelState.IsValid)
             {
-                _context.Clients.Add(client);
-                await _context.SaveChangesAsync();
+                await _clientService.AddClient(client);
                 return RedirectToAction(nameof(Index));
             }
             return View(client);
         }
 
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(Guid id)
         {
-            var client = await _context.Clients.FirstOrDefaultAsync(c => c.Id == id);
+            var client = await _clientService.GetClient(id);
             if (client == null)
             {
                 return NotFound();
@@ -49,14 +49,9 @@ namespace ProjektInzynierski.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var client = await _context.Clients.FindAsync(id);
-            if (client != null)
-            {
-                _context.Clients.Remove(client);
-                await _context.SaveChangesAsync();
-            }
+            await _clientService.DeleteClient(id);
             return RedirectToAction(nameof(Index));
         }
     }
