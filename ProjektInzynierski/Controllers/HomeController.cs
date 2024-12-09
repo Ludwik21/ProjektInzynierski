@@ -1,19 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace ProjektInzynierski.Controllers
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    // Strona główna
+    [HttpGet]
+    public IActionResult Index()
     {
-        // Strona główna - domyślnie formularz logowania
-        [HttpGet]
-        public IActionResult Index()
-        {
-            return RedirectToAction("Login", "Users");
-        }
+        return View();
+    }
 
-        public IActionResult Error()
-        {
-            return View(); // Widok błędu
-        }
+    public IActionResult Error()
+    {
+        return View(); // Widok błędu
     }
 }

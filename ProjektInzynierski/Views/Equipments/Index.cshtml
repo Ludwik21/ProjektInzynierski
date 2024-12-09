@@ -1,57 +1,31 @@
-﻿@model List<ProjektInzynierski.Models.CartItem>;
+﻿@using ProjektInzynierski.Application.Models.Equipment
+@model IEnumerable<EquipmentDto>
 
-@{
-    ViewData["Title"] = "Koszyk";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-<h2>Koszyk</h2>
-
-@if (Model == null || !Model.Any())
-{
-    <p>Twój koszyk jest pusty.</p>
-}
-else
-{
-    <table class="table table-striped">
-        <thead>
+<h1>Lista sprzętów</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Nazwa</th>
+            <th>Kategoria</th>
+            <th>Marka</th>
+            <th>Dostępność</th>
+            <th>Akcje</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var equipment in Model)
+        {
             <tr>
-                <th>Nazwa</th>
-                <th>Cena za dzień</th>
-                <th>Ilość</th>
-                <th>Łącznie</th>
-                <th>Akcje</th>
+                <td>@equipment.Name</td>
+                <td>@equipment.Category</td>
+                <td>@equipment.Brand</td>
+                <td>@(equipment.IsAvailable ? "Tak" : "Nie")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@equipment.Id">Szczegóły</a> |
+                    <a asp-action="Edit" asp-route-id="@equipment.Id">Edytuj</a> |
+                    <a asp-action="Delete" asp-route-id="@equipment.Id">Usuń</a>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.Name</td>
-                    <td>@item.PricePerDay.ToString("C")</td>
-                    <td>@item.Quantity</td>
-                    <td>@item.TotalPrice.ToString("C")</td>
-                    <td>
-                        <form asp-action="RemoveFromCart" asp-controller="CartItem" method="post">
-                            <input type="hidden" name="equipmentId" value="@item.Id" />
-                            <button type="submit" class="btn btn-danger btn-sm">Usuń</button>
-                        </form>
-                    </td>
-                </tr>
-            }
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="3" class="text-right font-weight-bold">Suma Koszyka:</td>
-                <td colspan="2" class="font-weight-bold">@Model.Sum(item => item.TotalPrice).ToString("C")</td>
-            </tr>
-        </tfoot>
-    </table>
-
-    <div class="d-flex justify-content-between">
-        <a asp-action="Index" asp-controller="Equipments" class="btn btn-primary">Kontynuuj zakupy</a>
-
-        <form asp-action="Checkout" asp-controller="CartItem" method="post">
-            <button type="submit" class="btn btn-success">Przejdź do rezerwacji</button>
-        </form>
-    </div>
-}
+        }
+    </tbody>
+</table>

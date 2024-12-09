@@ -12,7 +12,7 @@ namespace ProjektInzynierski.Infrastructure.Models
 
         // Relacja do klienta
         public virtual ClientDao? Client { get; set; } // Nawiazanie do obiektu Client
-        public int? ClientId { get; set; }
+        public Guid? ClientId { get; set; }
 
         //Domyślna rola to klient
         public Role UserRole { get; set; } = Role.Client;

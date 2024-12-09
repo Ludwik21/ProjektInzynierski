@@ -1,72 +1,52 @@
-﻿@model IEnumerable<ProjektInzynierski.Models.Reservation>
+﻿@model IEnumerable<ProjektInzynierski.Infrastructure.Models.ReservationDao>
 
-@{
-    ViewData["Title"] = "Rezerwacje";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+<h1>Lista rezerwacji</h1>
 
-<h2>Lista Rezerwacji</h2>
-
-<form method="get" asp-action="Index" class="mb-3">
-    <div class="form-group">
-        <label for="clientId">Klient:</label>
-        <select id="clientId" name="clientId" class="form-control">
-            <option value="">Wszyscy</option>
-            @foreach (var client in ViewBag.Clients)
-            {
-                <option value="@client.ClientID">@client.FirstName @client.LastName</option>
-            }
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="equipmentId">Sprzęt:</label>
-        <select id="equipmentId" name="equipmentId" class="form-control">
-            <option value="">Wszystkie</option>
-            @foreach (var equipment in ViewBag.Equipments)
-            {
-                <option value="@equipment.EquipmentID">@equipment.Name</option>
-            }
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="status">Status:</label>
-        <select id="status" name="status" class="form-control">
-            <option value="">Wszystkie</option>
-            <option value="Potwierdzona">Potwierdzona</option>
-            <option value="Oczekująca">Oczekująca</option>
-            <option value="Odrzucona">Odrzucona</option>
-        </select>
-    </div>
-    <button type="submit" class="btn btn-primary">Filtruj</button>
+<form method="get" asp-action="Index">
+    <label for="clientId">Filtruj według klienta:</label>
+    <select id="clientId" name="clientId">
+        <option value="">-- Wybierz --</option>
+        @foreach (var client in ViewBag.Clients)
+        {
+            <option value="@client.Id">@client.Name</option>
+        }
+    </select>
+    <label for="status">Status:</label>
+    <select id="status" name="status">
+        <option value="">-- Wybierz --</option>
+        <option value="Issued">Wydana</option>
+        <option value="PaymentCompleted">Płatność zakończona</option>
+        <option value="Completed">Zakończona</option>
+        <option value="Cancelled">Anulowana</option>
+        <option value="Rejected">Odrzucona</option>
+    </select>
+    <button type="submit">Filtruj</button>
 </form>
 
-<table class="table table-bordered">
+<table>
     <thead>
         <tr>
-            <th>Imię i Nazwisko Klienta</th>
-            <th>Nazwa Sprzętu</th>
-            <th>Data Rozpoczęcia</th>
-            <th>Data Zakończenia</th>
+            <th>Id</th>
+            <th>Data rozpoczęcia</th>
+            <th>Data zakończenia</th>
             <th>Status</th>
+            <th>Klient</th>
             <th>Akcje</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var reservation in Model)
         {
             <tr>
-                <td>items</td>
-                @foreach(var equipment in item.Items)
-                {
-                    <td>@equipment.Equipment.Name</td>
-                }
-                <td>@item.StartDate.ToShortDateString()</td>
-                <td>@item.EndDate.ToShortDateString()</td>
-                <td>@item.Status</td>
+                <td>@reservation.Id</td>
+                <td>@reservation.StartDate.ToShortDateString()</td>
+                <td>@reservation.EndDate.ToShortDateString()</td>
+                <td>@reservation.Status</td>
+                <td>@reservation.Client.Name</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edytuj</a>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Szczegóły</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Usuń</a>
+                    <a asp-action="Details" asp-route-id="@reservation.Id">Szczegóły</a> |
+                    <a asp-action="Edit" asp-route-id="@reservation.Id">Edytuj</a> |
+                    <a asp-action="Delete" asp-route-id="@reservation.Id">Usuń</a>
                 </td>
             </tr>
         }

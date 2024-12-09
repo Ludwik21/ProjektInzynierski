@@ -9,11 +9,18 @@ namespace ProjektInzynierski.Infrastructure.Models.Configuration
         {
             builder.HasKey(x => x.Id);
 
-
+            // Relacja: Equipment -> CompatibleEquipments
             builder.HasOne(x => x.Equipment)
-                .WithMany(i => i.CompatibleEquipments)
+                .WithMany(e => e.CompatibleEquipments)
                 .HasForeignKey(x => x.EquipmentId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Relacja: CompatibleEquipment -> CompatibleAsEquipment
+            builder.HasOne(x => x.CompatibleEquipment)
+                .WithMany(e => e.CompatibleAsEquipment)
+                .HasForeignKey(x => x.CompatibleEquipmentId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
+
 }

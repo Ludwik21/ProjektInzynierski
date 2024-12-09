@@ -1,27 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProjektInzynierski.Models;
-using System.Threading.Tasks;
-using System.Linq;
 using ProjektInzynierski.Application.Services;
+using ProjektInzynierski.Infrastructure.Models;
 
 namespace ProjektInzynierski.Controllers
 {
     public class ReservationsController : Controller
     {
         private readonly IReservationService _reservationService;
+        private readonly ProjektContext _context;
 
-        public ReservationsController(IReservationService reservationService)
+        public ReservationsController(IReservationService reservationService, ProjektContext context)
         {
             _reservationService = reservationService;
+            _context = context; // Wstrzyknięcie DbContext
         }
 
         // GET: Reservations
-        public async Task<IActionResult> Index(Guid? clientId, int? equipmentId, string status)
+        public async Task<IActionResult> Index(Guid? clientId, Guid? equipmentId, string status)
         {
             // Pobierz listy klientów i sprzętów, które będą użyte w filtrach
             ViewBag.Clients = await _context.Clients.ToListAsync();
-            //ViewBag.Equipments = await _context.Equipment.ToListAsync();
+            ViewBag.Equipments = await _context.Equipment.ToListAsync();
 
             var query = _context.Reservations
                 .Include(r => r.Client)
@@ -37,12 +37,12 @@ namespace ProjektInzynierski.Controllers
 
             if (equipmentId.HasValue)
             {
-                query = query.Where(r => r.Items.Any(x => x.EquipmentId == equipmentId));
+                query = query.Where(r => r.Items.Any(x => x.EquipmentId == equipmentId.Value));
             }
 
             if (!string.IsNullOrEmpty(status))
             {
-                query = query.Where(r => r.Status == status);
+                query = query.Where(r => r.Status.ToString() == status);
             }
 
             // Zwróć wynik w widoku
@@ -51,51 +51,50 @@ namespace ProjektInzynierski.Controllers
         }
 
         // GET: Reservations/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return BadRequest("Identyfikator rezerwacji jest wymagany.");
             }
 
             var reservation = await _context.Reservations
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(r => r.Client)
+                .Include(r => r.Items)
+                .ThenInclude(i => i.Equipment)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
             if (reservation == null)
             {
-                return NotFound();
+                return NotFound("Nie znaleziono rezerwacji.");
             }
 
             return View(reservation);
         }
 
         // GET: Reservations/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            ViewBag.Clients = await _context.Clients.ToListAsync();
+            ViewBag.Equipments = await _context.Equipment.ToListAsync();
             return View();
         }
 
         // POST: Reservations/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ReservationID,ClientID,EquipmentID,StartDate,EndDate,Status")] Reservation reservation)
+        public async Task<IActionResult> Create(ReservationDao reservation)
         {
             if (ModelState.IsValid)
             {
-                //// Sprawdzanie dostępności sprzętu
-                //bool isAvailable = await CheckEquipmentAvailability(reservation.EquipmentID, reservation.StartDate, reservation.EndDate);
-                //if (!isAvailable)
-                //{
-                //    ModelState.AddModelError("", "Sprzęt jest niedostępny w wybranym okresie.");
-                //    return View(reservation);
-                //}
-
-                // Dodanie nowej rezerwacji do bazy
+                reservation.Id = Guid.NewGuid();
                 _context.Add(reservation);
                 await _context.SaveChangesAsync();
-
-                // Przekierowanie do strony z listą rezerwacji
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.Clients = await _context.Clients.ToListAsync();
+            ViewBag.Equipments = await _context.Equipment.ToListAsync();
             return View(reservation);
         }
 
@@ -111,29 +110,35 @@ namespace ProjektInzynierski.Controllers
         }
 
         // GET: Reservations/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return BadRequest("Identyfikator rezerwacji jest wymagany.");
             }
 
-            var reservation = await _context.Reservations.FindAsync(id);
+            var reservation = await _context.Reservations
+                .Include(r => r.Items)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
             if (reservation == null)
             {
-                return NotFound();
+                return NotFound("Nie znaleziono rezerwacji.");
             }
+
+            ViewBag.Clients = await _context.Clients.ToListAsync();
+            ViewBag.Equipments = await _context.Equipment.ToListAsync();
             return View(reservation);
         }
 
         // POST: Reservations/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ReservationID,ClientID,EquipmentID,StartDate,EndDate,Status")] Reservation reservation)
+        public async Task<IActionResult> Edit(Guid id, ReservationDao reservation)
         {
             if (id != reservation.Id)
             {
-                return NotFound();
+                return BadRequest("Identyfikatory nie pasują.");
             }
 
             if (ModelState.IsValid)
@@ -142,36 +147,41 @@ namespace ProjektInzynierski.Controllers
                 {
                     _context.Update(reservation);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!ReservationExists(reservation.Id))
                     {
-                        return NotFound();
+                        return NotFound("Nie znaleziono rezerwacji.");
                     }
                     else
                     {
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.Clients = await _context.Clients.ToListAsync();
+            ViewBag.Equipments = await _context.Equipment.ToListAsync();
             return View(reservation);
         }
 
         // GET: Reservations/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return BadRequest("Identyfikator rezerwacji jest wymagany.");
             }
 
             var reservation = await _context.Reservations
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(r => r.Client)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
             if (reservation == null)
             {
-                return NotFound();
+                return NotFound("Nie znaleziono rezerwacji.");
             }
 
             return View(reservation);
@@ -180,7 +190,7 @@ namespace ProjektInzynierski.Controllers
         // POST: Reservations/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var reservation = await _context.Reservations.FindAsync(id);
             if (reservation != null)
@@ -191,8 +201,7 @@ namespace ProjektInzynierski.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // Sprawdzanie, czy rezerwacja istnieje
-        private bool ReservationExists(int id)
+        private bool ReservationExists(Guid id)
         {
             return _context.Reservations.Any(e => e.Id == id);
         }

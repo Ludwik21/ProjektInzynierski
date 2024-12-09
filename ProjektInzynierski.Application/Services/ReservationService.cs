@@ -4,7 +4,7 @@ using ProjektInzynierski.Infrastructure.Repositories;
 
 namespace ProjektInzynierski.Application.Services
 {
-    public class ReservationService
+    public class ReservationService : IReservationService
     {
         private readonly IReservationRepository _repository;
 

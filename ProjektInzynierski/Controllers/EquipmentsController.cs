@@ -21,20 +21,31 @@ namespace ProjektInzynierski.Controllers
         // GET: Equipments
         public async Task<IActionResult> Index()
         {
-            var equipments = await _equipmentService.GetEquipments();
-            return View(equipments);
+            try
+            {
+                var equipments = await _equipmentService.GetEquipments();
+                return View(equipments);
+            }
+            catch (Exception ex)
+            {
+                return View("Error", ex.Message); // Strona błędu w razie problemów
+            }
         }
 
 
         // GET: Equipments/Details/5
         public async Task<IActionResult> Details(Guid id)
         {
+            if (id == Guid.Empty)
+            {
+                return BadRequest("Nieprawidłowy identyfikator.");
+            }
+
             var equipment = await _equipmentService.GetEquipment(id);
             if (equipment == null)
             {
                 return NotFound();
             }
-
 
             return View(equipment);
         }
@@ -50,7 +61,7 @@ namespace ProjektInzynierski.Controllers
         // POST: Equipments/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EquipmentID,Category,Name,Brand,Description,AvailabilityStatus,PricePerDay")] CreateEquipmentDto equipment)
+        public async Task<IActionResult> Create(CreateEquipmentDto equipment)
         {
             if (ModelState.IsValid)
             {
@@ -76,7 +87,7 @@ namespace ProjektInzynierski.Controllers
         // POST: Equipments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("EquipmentID,Category,Name,Brand,Description,AvailabilityStatus,PricePerDay")] EquipmentDto equipment)
+        public async Task<IActionResult> Edit(Guid id, EquipmentDto equipment)
         {
             if (id != equipment.Id)
             {
@@ -96,9 +107,20 @@ namespace ProjektInzynierski.Controllers
         // GET: Equipments/Delete/5
         public async Task<IActionResult> Delete(Guid id)
         {
-            await _equipmentService.DeleteEquipment(id);
-            return RedirectToAction(nameof(Index));
+            if (id == Guid.Empty)
+            {
+                return BadRequest("Nieprawidłowy identyfikator.");
+            }
+
+            var equipment = await _equipmentService.GetEquipment(id);
+            if (equipment == null)
+            {
+                return NotFound();
+            }
+
+            return View(equipment); // Widok potwierdzenia
         }
+
 
 
         // POST: Equipments/Delete/5
@@ -125,13 +147,20 @@ namespace ProjektInzynierski.Controllers
 
         public async Task<IActionResult> Reserve(Guid id)
         {
+            if (id == Guid.Empty)
+            {
+                return BadRequest("Nieprawidłowy identyfikator.");
+            }
+
+            var equipment = await _equipmentService.GetEquipment(id);
+            if (equipment == null || !equipment.IsAvailable)
+            {
+                return NotFound("Sprzęt jest niedostępny.");
+            }
+
             await _equipmentService.ReserveEquipment(id);
-
-
-            // Przekierowanie do strony potwierdzenia rezerwacji
-            return RedirectToAction("ReservationConfirmed", new { id });
+            return RedirectToAction(nameof(ReservationConfirmed), new { id });
         }
-
 
         public IActionResult ReservationConfirmed(Guid id)
         {

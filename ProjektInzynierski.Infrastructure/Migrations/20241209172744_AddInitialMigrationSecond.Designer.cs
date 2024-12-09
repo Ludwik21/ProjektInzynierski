@@ -9,11 +9,11 @@ using ProjektInzynierski.Infrastructure.Models;
 
 #nullable disable
 
-namespace ProjektInzynierski.Migrations
+namespace ProjektInzynierski.Infrastructure.Migrations
 {
     [DbContext(typeof(ProjektContext))]
-    [Migration("20241202125238_AddUserRole")]
-    partial class AddUserRole
+    [Migration("20241209172744_AddInitialMigrationSecond")]
+    partial class AddInitialMigrationSecond
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,41 +25,20 @@ namespace ProjektInzynierski.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ProjektInzynierski.Models.CartItem", b =>
+            modelBuilder.Entity("ProjektInzynierski.Infrastructure.Models.ClientDao", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("PricePerDay")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CartItems");
-                });
-
-            modelBuilder.Entity("ProjektInzynierski.Models.Client", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("datetime2");
@@ -69,83 +48,77 @@ namespace ProjektInzynierski.Migrations
                     b.ToTable("Clients");
                 });
 
-            modelBuilder.Entity("ProjektInzynierski.Models.Equipment", b =>
+            modelBuilder.Entity("ProjektInzynierski.Infrastructure.Models.EquipmentCompatibility", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<Guid>("CompatibleEquipmentId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool?>("AvailabilityStatus")
-                        .HasColumnType("bit");
+                    b.Property<Guid>("EquipmentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompatibleEquipmentId");
+
+                    b.HasIndex("EquipmentId");
+
+                    b.ToTable("EquipmentCompatibility");
+                });
+
+            modelBuilder.Entity("ProjektInzynierski.Infrastructure.Models.EquipmentDao", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Brand")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Category")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<decimal>("PricePerDay")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("PricePerDayCurrency")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.ToTable("Equipment");
                 });
 
-            modelBuilder.Entity("ProjektInzynierski.Models.Payment", b =>
+            modelBuilder.Entity("ProjektInzynierski.Infrastructure.Models.ReservationDao", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Amount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("PaymentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("PaymentMethod")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ReservationId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Payments");
-                });
-
-            modelBuilder.Entity("ProjektInzynierski.Models.Reservation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ClientId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ClientId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("RequestingUserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("RequestingUserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("ReservationDate")
                         .HasColumnType("datetime2");
@@ -153,12 +126,8 @@ namespace ProjektInzynierski.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -167,30 +136,22 @@ namespace ProjektInzynierski.Migrations
                     b.ToTable("Reservations");
                 });
 
-            modelBuilder.Entity("ProjektInzynierski.Models.ReservationItem", b =>
+            modelBuilder.Entity("ProjektInzynierski.Infrastructure.Models.ReservationItemDao", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<Guid>("EquipmentId")
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<Guid>("ReservationId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("EquipmentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ReservationId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EquipmentId");
+                    b.HasKey("EquipmentId", "ReservationId");
 
                     b.HasIndex("ReservationId");
 
-                    b.ToTable("ReservationItem");
+                    b.ToTable("ReservationItems");
                 });
 
-            modelBuilder.Entity("ProjektInzynierski.Models.User", b =>
+            modelBuilder.Entity("ProjektInzynierski.Infrastructure.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -198,8 +159,8 @@ namespace ProjektInzynierski.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ClientId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("ClientId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserEmail")
                         .IsRequired()
@@ -228,9 +189,28 @@ namespace ProjektInzynierski.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("ProjektInzynierski.Models.Reservation", b =>
+            modelBuilder.Entity("ProjektInzynierski.Infrastructure.Models.EquipmentCompatibility", b =>
                 {
-                    b.HasOne("ProjektInzynierski.Models.Client", "Client")
+                    b.HasOne("ProjektInzynierski.Infrastructure.Models.EquipmentDao", "CompatibleEquipment")
+                        .WithMany("CompatibleAsEquipment")
+                        .HasForeignKey("CompatibleEquipmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ProjektInzynierski.Infrastructure.Models.EquipmentDao", "Equipment")
+                        .WithMany("CompatibleEquipments")
+                        .HasForeignKey("EquipmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CompatibleEquipment");
+
+                    b.Navigation("Equipment");
+                });
+
+            modelBuilder.Entity("ProjektInzynierski.Infrastructure.Models.ReservationDao", b =>
+                {
+                    b.HasOne("ProjektInzynierski.Infrastructure.Models.ClientDao", "Client")
                         .WithMany("Reservations")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -239,15 +219,15 @@ namespace ProjektInzynierski.Migrations
                     b.Navigation("Client");
                 });
 
-            modelBuilder.Entity("ProjektInzynierski.Models.ReservationItem", b =>
+            modelBuilder.Entity("ProjektInzynierski.Infrastructure.Models.ReservationItemDao", b =>
                 {
-                    b.HasOne("ProjektInzynierski.Models.Equipment", "Equipment")
+                    b.HasOne("ProjektInzynierski.Infrastructure.Models.EquipmentDao", "Equipment")
                         .WithMany("ReservationItems")
                         .HasForeignKey("EquipmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ProjektInzynierski.Models.Reservation", "Reservation")
+                    b.HasOne("ProjektInzynierski.Infrastructure.Models.ReservationDao", "Reservation")
                         .WithMany("Items")
                         .HasForeignKey("ReservationId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -258,9 +238,9 @@ namespace ProjektInzynierski.Migrations
                     b.Navigation("Reservation");
                 });
 
-            modelBuilder.Entity("ProjektInzynierski.Models.User", b =>
+            modelBuilder.Entity("ProjektInzynierski.Infrastructure.Models.User", b =>
                 {
-                    b.HasOne("ProjektInzynierski.Models.Client", "Client")
+                    b.HasOne("ProjektInzynierski.Infrastructure.Models.ClientDao", "Client")
                         .WithMany("Users")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -268,19 +248,23 @@ namespace ProjektInzynierski.Migrations
                     b.Navigation("Client");
                 });
 
-            modelBuilder.Entity("ProjektInzynierski.Models.Client", b =>
+            modelBuilder.Entity("ProjektInzynierski.Infrastructure.Models.ClientDao", b =>
                 {
                     b.Navigation("Reservations");
 
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("ProjektInzynierski.Models.Equipment", b =>
+            modelBuilder.Entity("ProjektInzynierski.Infrastructure.Models.EquipmentDao", b =>
                 {
+                    b.Navigation("CompatibleAsEquipment");
+
+                    b.Navigation("CompatibleEquipments");
+
                     b.Navigation("ReservationItems");
                 });
 
-            modelBuilder.Entity("ProjektInzynierski.Models.Reservation", b =>
+            modelBuilder.Entity("ProjektInzynierski.Infrastructure.Models.ReservationDao", b =>
                 {
                     b.Navigation("Items");
                 });

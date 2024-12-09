@@ -1,55 +1,28 @@
-﻿@model ProjektInzynierski.Models.Reservation
+﻿@model ProjektInzynierski.Application.Models.Reservation.CreateReservationDto
 
-@{
-    ViewData["Title"] = "Edit";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+<h1>Edytuj rezerwację</h1>
 
-<h1>Edit</h1>
-
-<h4>Reservation</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ReservationID" />
-            <div class="form-group">
-                <label asp-for="ClientID" class="control-label"></label>
-                <input asp-for="ClientID" class="form-control" />
-                <span asp-validation-for="ClientID" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EquipmentID" class="control-label"></label>
-                <input asp-for="EquipmentID" class="form-control" />
-                <span asp-validation-for="EquipmentID" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StartDate" class="control-label"></label>
-                <input asp-for="StartDate" class="form-control" />
-                <span asp-validation-for="StartDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EndDate" class="control-label"></label>
-                <input asp-for="EndDate" class="form-control" />
-                <span asp-validation-for="EndDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+<form asp-action="Edit">
+    <input type="hidden" asp-for="Id" />
+    <div>
+        <label for="StartDate">Data rozpoczęcia</label>
+        <input asp-for="StartDate" type="date" />
     </div>
-</div>
+    <div>
+        <label for="EndDate">Data zakończenia</label>
+        <input asp-for="EndDate" type="date" />
+    </div>
+    <div>
+        <label for="Status">Status</label>
+        <select asp-for="Status">
+            <option value="Issued">Wydana</option>
+            <option value="PaymentCompleted">Płatność zakończona</option>
+            <option value="Completed">Zakończona</option>
+            <option value="Cancelled">Anulowana</option>
+            <option value="Rejected">Odrzucona</option>
+        </select>
+    </div>
+    <button type="submit">Zapisz</button>
+</form>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+<a asp-action="Index">Powrót</a>

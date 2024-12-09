@@ -14,6 +14,10 @@ namespace ProjektInzynierski.Infrastructure.Models
         public Currency PricePerDayCurrency { get; set; }
         public bool IsAvailable { get; set; }
         public virtual List<ReservationItemDao> ReservationItems { get; set; }
-        public virtual List<EquipmentCompatibility> CompatibleEquipments { get; set; }
+
+        // Kolekcje dla relacji
+        public virtual List<EquipmentCompatibility> CompatibleEquipments { get; set; } // Sprzęt, który jest kompatybilny
+        public virtual List<EquipmentCompatibility> CompatibleAsEquipment { get; set; } // Sprzęt, dla którego ten jest kompatybilny
     }
+
 }

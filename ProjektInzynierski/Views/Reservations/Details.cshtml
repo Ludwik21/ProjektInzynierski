@@ -1,49 +1,19 @@
-﻿@model ProjektInzynierski.Models.Reservation
+﻿@model ProjektInzynierski.Infrastructure.Models.ReservationDao
 
-@{
-    ViewData["Title"] = "Details";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+<h1>Szczegóły rezerwacji</h1>
 
-<h1>Details</h1>
+<p><strong>Id rezerwacji:</strong> @Model.Id</p>
+<p><strong>Data rozpoczęcia:</strong> @Model.StartDate.ToShortDateString()</p>
+<p><strong>Data zakończenia:</strong> @Model.EndDate.ToShortDateString()</p>
+<p><strong>Status:</strong> @Model.Status</p>
+<p><strong>Klient:</strong> @Model.Client.Name</p>
 
-<div>
-    <h4>Reservation</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ClientId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ClientId)
-        </dd>
- @*        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EquipmentID)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EquipmentID)
-        </dd> *@
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StartDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StartDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EndDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EndDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+<h2>Sprzęt</h2>
+<ul>
+    @foreach (var item in Model.Items)
+    {
+        <li>@item.Equipment.Name</li>
+    }
+</ul>
+
+<a asp-action="Index">Powrót</a>

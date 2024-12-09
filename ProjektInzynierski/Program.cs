@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using ProjektInzynierski.Models;
 using Microsoft.Extensions.Logging;
 using ProjektInzynierski.Application.Services;
 using ProjektInzynierski.Infrastructure.Repositories;
@@ -42,10 +41,12 @@ logger.LogInformation("Dodano konfiguracjê uwierzytelniania z plikami cookie.");
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ProjektContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+        b => b.MigrationsAssembly("ProjektInzynierski.Infrastructure")); // Wskazanie projektu z migracjami
     logger.LogInformation("Po³¹czono z baz¹ danych za pomoc¹ ³añcucha po³¹czenia: {ConnectionString}",
         builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
 
 // Dodanie IPasswordHasher do kontenera DI
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
@@ -53,6 +54,8 @@ builder.Services.AddScoped<IEquipmentService, EquipmentService>();
 builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
+builder.Services.AddScoped<IReservationService, ReservationService>();
+
 
 // Konfiguracja sesji
 builder.Services.AddDistributedMemoryCache();
@@ -91,23 +94,23 @@ logger.LogInformation("Konfiguracja autoryzacji zosta³a zakoñczona.");
 
 var app = builder.Build();
 
-// Inicjalizacja danych SeedData
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<ProjektContext>();
+//// Inicjalizacja danych SeedData
+//using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
+//    var context = services.GetRequiredService<ProjektContext>();
 
-    try
-    {
-        logger.LogInformation("Rozpoczynanie inicjalizacji danych SeedData...");
-        SeedData.Initialize(services, context);
-        logger.LogInformation("Dane SeedData zosta³y pomyœlnie zainicjalizowane.");
-    }
-    catch (Exception ex)
-    {
-        logger.LogError(ex, "Wyst¹pi³ b³¹d podczas inicjalizacji danych SeedData.");
-    }
-}
+//    try
+//    {
+//        logger.LogInformation("Rozpoczynanie inicjalizacji danych SeedData...");
+//        SeedData.Initialize(services, context);
+//        logger.LogInformation("Dane SeedData zosta³y pomyœlnie zainicjalizowane.");
+//    }
+//    catch (Exception ex)
+//    {
+//        logger.LogError(ex, "Wyst¹pi³ b³¹d podczas inicjalizacji danych SeedData.");
+//    }
+//}
 
 // Middleware dla b³êdów i wymuszenia HTTPS
 if (!app.Environment.IsDevelopment())

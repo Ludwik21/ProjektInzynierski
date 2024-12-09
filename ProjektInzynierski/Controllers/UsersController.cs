@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProjektInzynierski.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using ProjektInzynierski.Application.Services;
+using ProjektInzynierski.Infrastructure.Models;
+
 
 namespace ProjektInzynierski.Controllers
 {
