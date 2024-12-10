@@ -15,11 +15,12 @@ namespace ProjektInzynierski.Controllers
         private readonly ProjektContext _context;
         private readonly IPasswordHasher<User> _passwordHasher;
 
-        public UsersController(ProjektContext context, IPasswordHasher<User> passwordHasher, IEquipmentService equipmentService)
+        public UsersController(ProjektContext context, IPasswordHasher<User> passwordHasher)
         {
             _context = context;
             _passwordHasher = passwordHasher;
         }
+
 
         [HttpGet]
         public IActionResult Login()

@@ -24,16 +24,16 @@ var logger = LoggerFactory.Create(config =>
 
 logger.LogInformation("Rozpoczynanie konfiguracji aplikacji...");
 
-// Konfiguracja uwierzytelniania z plikami cookie
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/Users/Login";
-        options.AccessDeniedPath = "/Users/Login";
-        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-        options.Cookie.SameSite = SameSiteMode.None;
-        options.Cookie.HttpOnly = true;
-    });
+//// Konfiguracja uwierzytelniania z plikami cookie
+//builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+//    .AddCookie(options =>
+//    {
+//        options.LoginPath = "/Users/Login";
+//        options.AccessDeniedPath = "/Users/Login";
+//        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+//        options.Cookie.SameSite = SameSiteMode.None;
+//        options.Cookie.HttpOnly = true;
+//    });
 
 logger.LogInformation("Dodano konfiguracjê uwierzytelniania z plikami cookie.");
 
