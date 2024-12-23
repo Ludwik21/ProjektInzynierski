@@ -1,54 +1,60 @@
 ﻿@model IEnumerable<ProjektInzynierski.Infrastructure.Models.ReservationDao>
 
-<h1>Lista rezerwacji</h1>
 
-<form method="get" asp-action="Index">
-    <label for="clientId">Filtruj według klienta:</label>
-    <select id="clientId" name="clientId">
-        <option value="">-- Wybierz --</option>
-        @foreach (var client in ViewBag.Clients)
-        {
-            <option value="@client.Id">@client.Name</option>
-        }
-    </select>
-    <label for="status">Status:</label>
-    <select id="status" name="status">
-        <option value="">-- Wybierz --</option>
-        <option value="Issued">Wydana</option>
-        <option value="PaymentCompleted">Płatność zakończona</option>
-        <option value="Completed">Zakończona</option>
-        <option value="Cancelled">Anulowana</option>
-        <option value="Rejected">Odrzucona</option>
-    </select>
-    <button type="submit">Filtruj</button>
-</form>
+@{
+    ViewData["Title"] = "Reservations List";
 
-<table>
-    <thead>
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text-center mb-4">Reservations List</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <p>Total Reservations: @Model.Count()</p>
+    <a href="/Reservations/Create" class="btn btn-yellow">Add New Reservation</a>
+</div>
+<table class="table table-hover table-bordered text-center">
+    <thead class="table-dark">
         <tr>
-            <th>Id</th>
-            <th>Data rozpoczęcia</th>
-            <th>Data zakończenia</th>
+            <th>Client</th>
+            <th>Start Date</th>
+            <th>End Date</th>
             <th>Status</th>
-            <th>Klient</th>
-            <th>Akcje</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var reservation in Model)
         {
             <tr>
-                <td>@reservation.Id</td>
-                <td>@reservation.StartDate.ToShortDateString()</td>
-                <td>@reservation.EndDate.ToShortDateString()</td>
+                <td>@reservation.ClientId</td>
+                <td>@reservation.StartDate.ToString("yyyy-MM-dd")</td>
+                <td>@reservation.EndDate.ToString("yyyy-MM-dd")</td>
                 <td>@reservation.Status</td>
-                <td>@reservation.Client.Name</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@reservation.Id">Szczegóły</a> |
-                    <a asp-action="Edit" asp-route-id="@reservation.Id">Edytuj</a> |
-                    <a asp-action="Delete" asp-route-id="@reservation.Id">Usuń</a>
+                    <a href="/Reservations/Details/@reservation.Id" class="btn btn-yellow btn-sm">Details</a>
+                    <a href="/Reservations/Edit/@reservation.Id" class="btn btn-yellow btn-sm mx-1">Edit</a>
+                    <a href="/Reservations/Delete/@reservation.Id" class="btn btn-danger btn-sm">Delete</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<style>
+    body {
+        background-color: #000000;
+        color: #ffffff;
+    }
+    .btn-yellow {
+        background-color: #FFD700;
+        color: #000000;
+        border: none;
+    }
+    .btn-yellow:hover {
+        background-color: #FFA500;
+        color: #ffffff;
+    }
+    table {
+        color: #ffffff;
+    }
+</style>

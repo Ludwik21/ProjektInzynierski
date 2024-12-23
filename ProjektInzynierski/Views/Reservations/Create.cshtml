@@ -1,35 +1,57 @@
 ﻿@model ProjektInzynierski.Application.Models.Reservation.CreateReservationDto
 
-<h1>Nowa rezerwacja</h1>
+@{
+    ViewData["Title"] = "Create Reservation";
 
-<form asp-action="Create">
-    <div>
-        <label for="ClientId">Klient</label>
-        <select asp-for="ClientId">
-            @foreach (var client in ViewBag.Clients)
-            {
-                <option value="@client.Id">@client.Name</option>
-            }
-        </select>
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text-center mb-4">Create New Reservation</h1>
+<form asp-action="Create" method="post" class="card p-4 shadow-sm">
+    <div class="mb-3">
+        <label for="ClientId" class="form-label">Client ID</label>
+        <input type="text" class="form-control" id="ClientId" name="ClientId" required>
     </div>
-    <div>
-        <label for="StartDate">Data rozpoczęcia</label>
-        <input asp-for="StartDate" type="date" />
+    <div class="mb-3">
+        <label for="RequestingUserId" class="form-label">Requesting User ID</label>
+        <input type="text" class="form-control" id="RequestingUserId" name="RequestingUserId" required>
     </div>
-    <div>
-        <label for="EndDate">Data zakończenia</label>
-        <input asp-for="EndDate" type="date" />
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="StartDate" class="form-label">Start Date</label>
+            <input type="date" class="form-control" id="StartDate" name="StartDate" required>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="EndDate" class="form-label">End Date</label>
+            <input type="date" class="form-control" id="EndDate" name="EndDate" required>
+        </div>
     </div>
-    <div>
-        <label for="EquipmentIds">Sprzęt</label>
-        <select asp-for="EquipmentIds" multiple>
-            @foreach (var equipment in ViewBag.Equipments)
-            {
-                <option value="@equipment.Id">@equipment.Name</option>
-            }
-        </select>
+    <div class="mb-3">
+        <label for="EquipmentIds" class="form-label">Equipment IDs (comma-separated)</label>
+        <input type="text" class="form-control" id="EquipmentIds" name="EquipmentIds">
     </div>
-    <button type="submit">Utwórz</button>
+    <button type="submit" class="btn btn-yellow">Create</button>
 </form>
 
-<a asp-action="Index">Powrót</a>
+<style>
+    body {
+        background-color: #000000;
+        color: #ffffff;
+    }
+
+    .btn-yellow {
+        background-color: #FFD700;
+        color: #000000;
+        border: none;
+    }
+
+        .btn-yellow:hover {
+            background-color: #FFA500;
+            color: #ffffff;
+        }
+
+    .card {
+        background-color: rgba(33, 37, 41, 0.8);
+        border: none;
+    }
+</style>

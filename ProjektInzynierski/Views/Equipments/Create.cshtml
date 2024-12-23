@@ -1,49 +1,38 @@
-﻿@using ProjektInzynierski.Application.Models.Equipment
-@model CreateEquipmentDto
+﻿@model ProjektInzynierski.Application.Models.Equipment.CreateEquipmentDto
 
-<h1>Dodaj nowy sprzęt</h1>
+@{
+    ViewData["Title"] = "Add Equipment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
-<form asp-action="Create">
-    <div>
-        <label for="Name">Nazwa</label>
-        <input asp-for="Name" />
-        <span asp-validation-for="Name"></span>
+<h1 class="text-center mb-4">Add New Equipment</h1>
+<form asp-action="Create" method="post" class="card p-4 shadow-sm">
+    <div class="mb-3">
+        <label for="Name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="Name" name="Name" required>
     </div>
-    <div>
-        <label for="Category">Kategoria</label>
-        <select asp-for="Category">
-            <option value="Lens">Obiektyw</option>
-            <option value="Camera">Kamera</option>
-            <option value="Tripod">Statyw</option>
-            <option value="Filters">Filtry</option>
-            <option value="Light">Oświetlenie</option>
-        </select>
-        <span asp-validation-for="Category"></span>
+    <div class="mb-3">
+        <label for="Brand" class="form-label">Brand</label>
+        <input type="text" class="form-control" id="Brand" name="Brand" required>
     </div>
-    <div>
-        <label for="Brand">Marka</label>
-        <input asp-for="Brand" />
-        <span asp-validation-for="Brand"></span>
+    <div class="mb-3">
+        <label for="PricePerDay" class="form-label">Price Per Day</label>
+        <input type="number" class="form-control" id="PricePerDay" name="PricePerDay" step="0.01" required>
     </div>
-    <div>
-        <label for="Description">Opis</label>
-        <textarea asp-for="Description"></textarea>
-        <span asp-validation-for="Description"></span>
-    </div>
-    <div>
-        <label for="PricePerDay">Cena za dzień</label>
-        <input asp-for="PricePerDay" />
-        <span asp-validation-for="PricePerDay"></span>
-    </div>
-    <div>
-        <label for="PricePerDayCurrency">Waluta</label>
-        <select asp-for="PricePerDayCurrency">
-            <option value="PLN">PLN</option>
+    <div class="mb-3">
+        <label for="PricePerDayCurrency" class="form-label">Currency</label>
+        <select class="form-select" id="PricePerDayCurrency" name="PricePerDayCurrency">
             <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="PLN">PLN</option>
         </select>
-        <span asp-validation-for="PricePerDayCurrency"></span>
     </div>
-    <button type="submit">Dodaj</button>
+    <div class="mb-3">
+        <label for="IsAvailable" class="form-label">Available</label>
+        <select class="form-select" id="IsAvailable" name="IsAvailable">
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-yellow">Save</button>
 </form>
-
-<a href="@Url.Action("Index", "Equipments")">Powrót</a>
