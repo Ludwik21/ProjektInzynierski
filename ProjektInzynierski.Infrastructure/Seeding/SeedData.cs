@@ -4,7 +4,6 @@ using ProjektInzynierski.Domain.Entities.Users;
 using ProjektInzynierski.Infrastructure.Models;
 using System;
 
-namespace ProjektInzynierski.Infrastructure.Seeding
 {
     public static class SeedData
     {
