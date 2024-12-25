@@ -1,12 +1,55 @@
-﻿@using ProjektInzynierski.Application.Models.Equipment
-@model EquipmentDto
+﻿@model ProjektInzynierski.Application.Models.Equipment.EquipmentDto
 
-<h1>Szczegóły sprzętu</h1>
-<p><strong>Nazwa:</strong> @Model.Name</p>
-<p><strong>Kategoria:</strong> @Model.Category</p>
-<p><strong>Marka:</strong> @Model.Brand</p>
-<p><strong>Opis:</strong> @Model.Description</p>
-<p><strong>Cena za dzień:</strong> @Model.PricePerDay @Model.PricePerDayCurrency</p>
-<p><strong>Dostępny:</strong> @(Model.IsAvailable ? "Tak" : "Nie")</p>
 
-<a href="@Url.Action("Index", "Equipments")">Powrót do listy</a>
+@{
+    ViewData["Title"] = "Equipment Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text-center mb-4">Equipment Details</h1>
+<div class="card p-4 shadow-sm">
+    <div class="mb-3">
+        <h5>Name:</h5>
+        <p>@Model.Name</p>
+    </div>
+    <div class="mb-3">
+        <h5>Brand:</h5>
+        <p>@Model.Brand</p>
+    </div>
+    <div class="mb-3">
+        <h5>Description:</h5>
+        <p>@Model.Description</p>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <h5>Price Per Day:</h5>
+            <p>@Model.PricePerDay @Model.PricePerDayCurrency</p>
+        </div>
+        <div class="col-md-6 mb-3">
+            <h5>Available:</h5>
+            <p>@(Model.IsAvailable ? "Yes" : "No")</p>
+        </div>
+    </div>
+    <a href="/Equipments/Edit/@Model.Id" class="btn btn-yellow">Edit</a>
+    <a href="/Equipments/Delete/@Model.Id" class="btn btn-danger">Delete</a>
+</div>
+
+<style>
+    body {
+        background-color: #000000;
+        color: #ffffff;
+    }
+    .btn-yellow {
+        background-color: #FFD700;
+        color: #000000;
+        border: none;
+    }
+    .btn-yellow:hover {
+        background-color: #FFA500;
+        color: #ffffff;
+    }
+    .card {
+        background-color: rgba(33, 37, 41, 0.8);
+        border: none;
+    }
+</style>

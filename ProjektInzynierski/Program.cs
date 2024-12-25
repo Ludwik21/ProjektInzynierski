@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using ProjektInzynierski.Application.Services;
 using ProjektInzynierski.Infrastructure.Repositories;
 using ProjektInzynierski.Infrastructure.Models;
+using ProjektInzynierski.Infrastructure.Seeding;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,15 +26,15 @@ var logger = LoggerFactory.Create(config =>
 logger.LogInformation("Rozpoczynanie konfiguracji aplikacji...");
 
 //// Konfiguracja uwierzytelniania z plikami cookie
-//builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-//    .AddCookie(options =>
-//    {
-//        options.LoginPath = "/Users/Login";
-//        options.AccessDeniedPath = "/Users/Login";
-//        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-//        options.Cookie.SameSite = SameSiteMode.None;
-//        options.Cookie.HttpOnly = true;
-//    });
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Users/Login";
+        options.AccessDeniedPath = "/Users/Login";
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Cookie.SameSite = SameSiteMode.None;
+        options.Cookie.HttpOnly = true;
+    });
 
 logger.LogInformation("Dodano konfiguracjê uwierzytelniania z plikami cookie.");
 
@@ -94,63 +95,82 @@ logger.LogInformation("Konfiguracja autoryzacji zosta³a zakoñczona.");
 
 var app = builder.Build();
 
-//// Inicjalizacja danych SeedData
-//using (var scope = app.Services.CreateScope())
-//{
-//    var services = scope.ServiceProvider;
-//    var context = services.GetRequiredService<ProjektContext>();
-
-//    try
-//    {
-//        logger.LogInformation("Rozpoczynanie inicjalizacji danych SeedData...");
-//        SeedData.Initialize(services, context);
-//        logger.LogInformation("Dane SeedData zosta³y pomyœlnie zainicjalizowane.");
-//    }
-//    catch (Exception ex)
-//    {
-//        logger.LogError(ex, "Wyst¹pi³ b³¹d podczas inicjalizacji danych SeedData.");
-//    }
-//}
-
-// Middleware dla b³êdów i wymuszenia HTTPS
-if (!app.Environment.IsDevelopment())
+///Inicjalizacja danych SeedData
+using (var scope = app.Services.CreateScope())
 {
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-    logger.LogInformation("W³¹czono obs³ugê HSTS w œrodowisku produkcyjnym.");
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<ProjektContext>();
+
+    try
+    {
+        logger.LogInformation("Rozpoczynanie inicjalizacji danych SeedData...");
+        SeedData.Initialize(services, context);
+        logger.LogInformation("Dane SeedData zosta³y pomyœlnie zainicjalizowane.");
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Wyst¹pi³ b³¹d podczas inicjalizacji danych SeedData.");
+    }
+
+
+    // Middleware dla b³êdów i wymuszenia HTTPS
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler("/Home/Error");
+        app.UseHsts();
+        logger.LogInformation("W³¹czono obs³ugê HSTS w œrodowisku produkcyjnym.");
+    }
+    else
+    {
+        app.UseDeveloperExceptionPage();
+        logger.LogInformation("W³¹czono stronê b³êdów dla deweloperów.");
+    }
+
+    // Middleware
+    app.UseHttpsRedirection();
+    app.UseStaticFiles();
+    app.UseRouting();
+    app.UseCors("AllowSpecificOrigin");
+    app.UseAuthentication();
+    app.UseAuthorization();
+    app.UseSession();
+
+
+    logger.LogInformation("Middleware zosta³y poprawnie skonfigurowane.");
+
+    // Dodaj inicjalizacjê danych SeedData
+    using (var serviceScope = app.Services.CreateScope())
+    {
+        var scopedServices = serviceScope.ServiceProvider;
+        var dbContext = scopedServices.GetRequiredService<ProjektContext>();
+
+        try
+        {
+            SeedData.Initialize(scopedServices, dbContext);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error initializing SeedData: {ex.Message}");
+        }
+    }
 }
-else
-{
-    app.UseDeveloperExceptionPage();
-    logger.LogInformation("W³¹czono stronê b³êdów dla deweloperów.");
-}
+    
 
-// Middleware
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-app.UseRouting();
-app.UseCors("AllowSpecificOrigin");
-app.UseAuthentication();
-app.UseAuthorization();
-app.UseSession();
+    // Mapowanie tras
+    app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
 
-logger.LogInformation("Middleware zosta³y poprawnie skonfigurowane.");
+    logger.LogInformation("Dodano mapowanie trasy domyœlnej.");
 
-// Mapowanie tras
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    app.MapControllerRoute(
+        name: "adminDashboard",
+        pattern: "admin/dashboard",
+        defaults: new { controller = "Users", action = "Dashboard" })
+        .RequireAuthorization("AdminOnly");
 
-logger.LogInformation("Dodano mapowanie trasy domyœlnej.");
+    logger.LogInformation("Dodano mapowanie trasy dla panelu administratora.");
 
-app.MapControllerRoute(
-    name: "adminDashboard",
-    pattern: "admin/dashboard",
-    defaults: new { controller = "Users", action = "Dashboard" })
-    .RequireAuthorization("AdminOnly");
-
-logger.LogInformation("Dodano mapowanie trasy dla panelu administratora.");
-
-// Uruchamianie aplikacji
-logger.LogInformation("Uruchamianie aplikacji...");
-app.Run();
+    // Uruchamianie aplikacji
+    logger.LogInformation("Uruchamianie aplikacji...");
+    app.Run();

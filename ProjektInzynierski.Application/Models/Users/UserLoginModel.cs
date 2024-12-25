@@ -1,16 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ProjektInzynierski.Infrastructure.Models
+namespace ProjektInzynierski.Application.Models.Users
 {
     public class UserLoginModel
     {
-        [Required(ErrorMessage = "Nazwa użytkownika jest wymagana.")]
-        [Display(Name = "Nazwa użytkownika")]
+        [Required]
         public string Username { get; set; }
 
-        [Required(ErrorMessage = "Hasło jest wymagane.")]
+        [Required]
         [DataType(DataType.Password)]
-        [Display(Name = "Hasło")]
         public string Password { get; set; }
     }
 }

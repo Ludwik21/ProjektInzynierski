@@ -1,55 +1,56 @@
-﻿@* @model IEnumerable<ProjektInzynierski.Models.User>
+﻿@model IEnumerable<ProjektInzynierski.Infrastructure.Models.User>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Users List";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
+<h1 class="text-center mb-4">Users List</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <p>Total Users: @Model.Count()</p>
+    <a href="/Users/Register" class="btn btn-yellow">Add New User</a>
+</div>
+<table class="table table-hover table-bordered text-center">
+    <thead class="table-dark">
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.UserName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserEmail)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserPhone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserPassword)
-            </th>
-            <th></th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserEmail)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserPhone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserPassword)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.UserName</td>
+                <td>@user.UserEmail</td>
+                <td>@user.UserRole</td>
+                <td>
+                    <a href="/Users/Details/@user.Id" class="btn btn-yellow btn-sm">Details</a>
+                    <a href="/Users/Edit/@user.Id" class="btn btn-yellow btn-sm mx-1">Edit</a>
+                    <a href="/Users/Delete/@user.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
- *@
+
+<style>
+    body {
+        background-color: #000000;
+        color: #ffffff;
+    }
+    .btn-yellow {
+        background-color: #FFD700;
+        color: #000000;
+        border: none;
+    }
+    .btn-yellow:hover {
+        background-color: #FFA500;
+        color: #ffffff;
+    }
+    table {
+        color: #ffffff;
+    }
+</style>

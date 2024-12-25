@@ -1,19 +1,69 @@
-﻿@model ProjektInzynierski.Infrastructure.Models.ReservationDao
+﻿@* @model ProjektInzynierski.Application.Models.Reservation.CreateReservationDto
 
-<h1>Szczegóły rezerwacji</h1>
+<h1>Szczegóły</h1>
 
-<p><strong>Id rezerwacji:</strong> @Model.Id</p>
-<p><strong>Data rozpoczęcia:</strong> @Model.StartDate.ToShortDateString()</p>
-<p><strong>Data zakończenia:</strong> @Model.EndDate.ToShortDateString()</p>
-<p><strong>Status:</strong> @Model.Status</p>
-<p><strong>Klient:</strong> @Model.Client.Name</p>
+@{
+    ViewData["Title"] = "Reservation Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
-<h2>Sprzęt</h2>
-<ul>
-    @foreach (var item in Model.Items)
-    {
-        <li>@item.Equipment.Name</li>
+<h1 class="text-center mb-4">Reservation Details</h1>
+<div class="card p-4 shadow-sm">
+    <div class="mb-3">
+        <h5>Client ID:</h5>
+        <p>@Model.ClientId</p>
+    </div>
+    <div class="mb-3">
+        <h5>Requesting User ID:</h5>
+        <p>@Model.RequestingUserId</p>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <h5>Start Date:</h5>
+            <p>@Model.StartDate.ToString("yyyy-MM-dd")</p>
+        </div>
+        <div class="col-md-6 mb-3">
+            <h5>End Date:</h5>
+            <p>@Model.EndDate.ToString("yyyy-MM-dd")</p>
+        </div>
+    </div>
+    <div class="mb-3">
+        <h5>Status:</h5>
+        <p>@Model.Status</p>
+    </div>
+    <div class="mb-3">
+        <h5>Equipment IDs:</h5>
+        <ul>
+            @foreach (var equipmentId in Model.EquipmentIds)
+            {
+                <li>@equipmentId</li>
+            }
+        </ul>
+    </div>
+    <a href="/Reservations/Edit/@Model.Id" class="btn btn-yellow">Edit</a>
+    <a href="/Reservations/Delete/@Model.Id" class="btn btn-danger">Delete</a>
+</div>
+
+<style>
+    body {
+        background-color: #000000;
+        color: #ffffff;
     }
-</ul>
 
-<a asp-action="Index">Powrót</a>
+    .btn-yellow {
+        background-color: #FFD700;
+        color: #000000;
+        border: none;
+    }
+
+        .btn-yellow:hover {
+            background-color: #FFA500;
+            color: #ffffff;
+        }
+
+    .card {
+        background-color: rgba(33, 37, 41, 0.8);
+        border: none;
+    }
+</style>
+ *@

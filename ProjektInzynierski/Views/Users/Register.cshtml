@@ -1,10 +1,12 @@
-﻿@* @model ProjektInzynierski.Models.UserRegistrationModel
+﻿@model ProjektInzynierski.Application.Models.Users.UserRegistrationModel
+
 @{
     ViewData["Title"] = "Register";
+        Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<h1 class="text-center mb-4">Register</h1>
 <div class="container mt-5">
-    <h2>Register</h2>
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success">@TempData["SuccessMessage"]</div>
@@ -13,24 +15,50 @@
     {
         <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
     }
-    <form asp-action="Register" method="post">
-        <div class="form-group">
-            <label for="UserName">Username</label>
+    <form asp-action="Register" method="post" class="card p-4 shadow-sm">
+        <div class="mb-3">
+            <label for="UserName" class="form-label">Username</label>
             <input type="text" name="UserName" class="form-control" id="UserName" autocomplete="username" required />
         </div>
-        <div class="form-group">
-            <label for="UserEmail">Email</label>
+        <div class="mb-3">
+            <label for="UserEmail" class="form-label">Email</label>
             <input type="email" name="UserEmail" class="form-control" id="UserEmail" autocomplete="email" required />
         </div>
-        <div class="form-group">
-            <label for="Phone">Phone</label>
+        <div class="mb-3">
+            <label for="Phone" class="form-label">Phone</label>
             <input type="tel" name="Phone" class="form-control" id="Phone" required />
         </div>
-        <div class="form-group">
-            <label for="Password">Password</label>
+        <div class="mb-3">
+            <label for="Password" class="form-label">Password</label>
             <input type="password" name="Password" class="form-control" id="Password" autocomplete="new-password" required />
         </div>
-        <button type="submit" class="btn btn-primary">Register</button>
+        <div class="mb-3">
+            <label for="ConfirmPassword" class="form-label">Confirm Password</label>
+            <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" required>
+        </div>
+        <button type="submit" class="btn btn-yellow">Register</button>
     </form>
 </div>
- *@
+
+<style>
+    body {
+        background-color: #000000;
+        color: #ffffff;
+    }
+
+    .btn-yellow {
+        background-color: #FFD700;
+        color: #000000;
+        border: none;
+    }
+
+        .btn-yellow:hover {
+            background-color: #FFA500;
+            color: #ffffff;
+        }
+
+    .card {
+        background-color: rgba(33, 37, 41, 0.8);
+        border: none;
+    }
+</style>

@@ -26,6 +26,7 @@ namespace ProjektInzynierski.Infrastructure.Models
             modelBuilder.ApplyConfiguration(new ReservationItemConfiguration());
             modelBuilder.ApplyConfiguration(new EquipmentConfiguration());
             modelBuilder.ApplyConfiguration(new EquipmentCompatibilityConfiguration());
+            modelBuilder.Entity<User>().Property(u => u.UserEmail).IsRequired();
         }
     }
 }

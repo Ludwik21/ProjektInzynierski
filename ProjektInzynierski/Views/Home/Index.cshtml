@@ -1,6 +1,41 @@
 ﻿@{
-    ViewData["Title"] = "Strona Główna";
+    ViewData["Title"] = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Witamy w Aplikacji!</h1>
-<p>To jest strona startowa aplikacji.</p>
+<div class="container mt-5 text-center">
+    <h1 class="mb-4">Witaj w naszej wypożyczalni !!</h1>
+    <p class="lead">Zarejestruj się bądź zaloguj aby przejść dalej :))</p>
+    <div class="mt-4">
+        <a href="/Users/Login" class="btn btn-yellow btn-lg mx-2">Login</a>
+        <a href="/Users/Register" class="btn btn-outline-light btn-lg mx-2">Register</a>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #000000;
+        color: #ffffff;
+    }
+
+    .btn-yellow {
+        background-color: #FFD700;
+        color: #000000;
+        border: none;
+    }
+
+        .btn-yellow:hover {
+            background-color: #FFA500;
+            color: #ffffff;
+        }
+
+    .btn-outline-light {
+        color: #ffffff;
+        border: 1px solid #ffffff;
+    }
+
+        .btn-outline-light:hover {
+            background-color: #ffffff;
+            color: #000000;
+        }
+</style>

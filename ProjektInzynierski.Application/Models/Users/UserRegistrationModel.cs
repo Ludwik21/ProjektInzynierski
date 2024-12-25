@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ProjektInzynierski.Infrastructure.Models
+namespace ProjektInzynierski.Application.Models.Users
 {
     public class UserRegistrationModel
     {
@@ -12,15 +12,18 @@ namespace ProjektInzynierski.Infrastructure.Models
         [EmailAddress(ErrorMessage = "Nieprawidłowy format e-mail.")]
         public string UserEmail { get; set; }
 
+        [Required(ErrorMessage = "Numer telefonu jest wymagany.")]
+        [Phone(ErrorMessage = "Nieprawidłowy format numeru telefonu.")]
+        public string Phone { get; set; }
+
         [Required(ErrorMessage = "Hasło jest wymagane.")]
         [DataType(DataType.Password)]
         [StringLength(100, MinimumLength = 6, ErrorMessage = "Hasło musi mieć co najmniej 6 znaków.")]
         public string Password { get; set; }
 
-        [Required(ErrorMessage = "Numer telefonu jest wymagany.")]
-        [Phone(ErrorMessage = "Nieprawidłowy format numeru telefonu.")]
-        public string Phone { get; set; }
+        [Required(ErrorMessage = "Potwierdzenie hasła jest wymagane.")]
+        [Compare("Password", ErrorMessage = "Hasła muszą być zgodne.")]
+        [DataType(DataType.Password)]
+        public string ConfirmPassword { get; set; }
     }
-
-
 }
