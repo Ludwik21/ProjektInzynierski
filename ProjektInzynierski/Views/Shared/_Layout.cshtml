@@ -41,14 +41,16 @@
 <body>
     <nav class="navbar navbar-dark navbar-expand-lg">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">Equipment Management</a>
+            <a class="navbar-brand" href="/"> Home</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="/Equipments">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/Equipments/Create">Add Equipment</a></li>
+                    @if (User?.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <a href="/Users/Logout" class="btn btn-danger">Logout</a>
+                    }
                 </ul>
             </div>
         </div>
@@ -57,8 +59,22 @@
         @RenderBody()
     </div>
     <footer>
-        <p>&copy; 2024 Equipment Management</p>
-    </footer>
+        <footer>
+            <style>
+                footer {
+                    background-color: rgba(33, 37, 41, 0.8);
+                    color: #ffffff;
+                    padding: 10px 0;
+                    position: fixed;
+                    bottom: 0;
+                    width: 100%;
+                    text-align: center;
+                    z-index: 10; /* Dodane */
+                }
+            </style>
+            <p>&copy; 2024 Ludwik Sopata</p>
+        </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

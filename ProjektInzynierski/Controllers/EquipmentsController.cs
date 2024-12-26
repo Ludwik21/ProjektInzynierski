@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ProjektInzynierski.Application.Models.Equipment;
 using ProjektInzynierski.Application.Services;
 using ProjektInzynierski.Domain.Entities.Equipments;
@@ -6,6 +7,7 @@ using ProjektInzynierski.Domain.Entities.Equipments;
 
 namespace ProjektInzynierski.Controllers
 {
+    [Authorize]
     public class EquipmentsController : Controller
     {
         private readonly IEquipmentService _equipmentService;
@@ -19,6 +21,7 @@ namespace ProjektInzynierski.Controllers
 
 
         // GET: Equipments
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             try
@@ -34,6 +37,7 @@ namespace ProjektInzynierski.Controllers
 
 
         // GET: Equipments/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(Guid id)
         {
             if (id == Guid.Empty)
@@ -52,6 +56,7 @@ namespace ProjektInzynierski.Controllers
 
 
         // GET: Equipments/Create
+        [Authorize(Roles = "Admin, Employee")]
         public IActionResult Create()
         {
             return View();
@@ -59,7 +64,9 @@ namespace ProjektInzynierski.Controllers
 
 
         // POST: Equipments/Create
+
         [HttpPost]
+        [Authorize(Roles = "Admin, Employee")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateEquipmentDto equipment)
         {
@@ -73,6 +80,7 @@ namespace ProjektInzynierski.Controllers
 
 
         // GET: Equipments/Edit/5
+        [Authorize(Roles = "Admin, Employee")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var equipment = await _equipmentService.GetEquipment(id);
@@ -86,6 +94,7 @@ namespace ProjektInzynierski.Controllers
 
         // POST: Equipments/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Admin, Employee")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, EquipmentDto equipment)
         {
@@ -105,6 +114,7 @@ namespace ProjektInzynierski.Controllers
 
 
         // GET: Equipments/Delete/5
+        [Authorize(Roles = "Admin, Employee")]
         public async Task<IActionResult> Delete(Guid id)
         {
             if (id == Guid.Empty)
@@ -125,6 +135,7 @@ namespace ProjektInzynierski.Controllers
 
         // POST: Equipments/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin, Employee")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
@@ -132,7 +143,7 @@ namespace ProjektInzynierski.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
+        [Authorize(Roles = "Admin, Employee, Client")]
         public async Task<IActionResult> SelectEquipment(EquipmentCategory category)
         {
             var equipmentList = await _equipmentService.GetEquipmentsByCategory(category);
@@ -144,7 +155,7 @@ namespace ProjektInzynierski.Controllers
 
 
 
-
+        [Authorize(Roles = "Admin, Employee, Client")]
         public async Task<IActionResult> Reserve(Guid id)
         {
             if (id == Guid.Empty)
@@ -162,6 +173,7 @@ namespace ProjektInzynierski.Controllers
             return RedirectToAction(nameof(ReservationConfirmed), new { id });
         }
 
+        [Authorize(Roles = "Admin, Employee, Client")]
         public IActionResult ReservationConfirmed(Guid id)
         {
             ViewData["EquipmentId"] = id;

@@ -1,0 +1,45 @@
+﻿@{
+    ViewData["Title"] = "Panel Admina";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h1>Panel Admina</h1>
+    <p class="lead">Witamy w centrum sterowania. Zarządzaj użytkownikami, sprzętem i rezerwacjami.</p>
+
+    <div class="row mt-4">
+        <!-- Zarządzanie użytkownikami -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Zarządzanie użytkownikami</h5>
+                    <p class="card-text">Dodawaj, edytuj i zarządzaj użytkownikami systemu.</p>
+                    <a href="/Users" class="btn btn-primary">Zarządzaj użytkownikami</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zarządzanie sprzętem -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Zarządzanie sprzętem</h5>
+                    <p class="card-text">Dodawaj nowy sprzęt i zarządzaj istniejącymi elementami.</p>
+                    <a href="/Equipments" class="btn btn-primary">Zarządzaj sprzętem</a>
+                    <a href="/Equipments/Create" class="btn btn-success mt-2">Dodaj sprzęt</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zarządzanie rezerwacjami -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Zarządzanie rezerwacjami</h5>
+                    <p class="card-text">Przeglądaj i obsługuj wszystkie rezerwacje w systemie.</p>
+                    <a href="/Reservations" class="btn btn-primary">Zarządzaj rezerwacjami</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

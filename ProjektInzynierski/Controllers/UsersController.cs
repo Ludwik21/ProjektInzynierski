@@ -7,9 +7,12 @@ using System.Security.Claims;
 using Microsoft.Extensions.Logging;
 using ProjektInzynierski.Infrastructure.Models;
 using ProjektInzynierski.Application.Models.Users;
+using ProjektInzynierski.Domain.Entities.Users;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProjektInzynierski.Controllers
 {
+    [Authorize]
     public class UsersController : Controller
     {
         private readonly ProjektContext _context;
@@ -23,12 +26,14 @@ namespace ProjektInzynierski.Controllers
             _logger = logger;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(UserLoginModel model)
@@ -37,51 +42,64 @@ namespace ProjektInzynierski.Controllers
 
             if (!ModelState.IsValid)
             {
-                _logger.LogWarning("Nieprawidłowy model logowania. Pola są puste.");
+                _logger.LogWarning("Model logowania jest nieprawidłowy.");
+                ModelState.AddModelError("", "Please fill in all fields.");
                 return View(model);
             }
 
             var user = await _context.Users.FirstOrDefaultAsync(u => u.UserEmail == model.Username);
             if (user == null)
             {
-                _logger.LogWarning("Nie znaleziono użytkownika z adresem email: {Username}", model.Username);
-                ModelState.AddModelError("", "Invalid username or password.");
+                _logger.LogWarning("Nie znaleziono użytkownika z adresem email: {UserEmail}", model.Username);
+                ModelState.AddModelError("", "Invalid email or password.");
                 return View(model);
             }
-
-            _logger.LogInformation("Użytkownik znaleziony w bazie danych: {Username}", user.UserName);
 
             var passwordResult = _passwordHasher.VerifyHashedPassword(user, user.UserPassword, model.Password);
             if (passwordResult != PasswordVerificationResult.Success)
             {
-                _logger.LogWarning("Nieprawidłowe hasło dla użytkownika: {Username}", user.UserName);
-                ModelState.AddModelError("", "Invalid username or password.");
+                _logger.LogWarning("Nieprawidłowe hasło dla użytkownika: {UserEmail}", model.Username);
+                ModelState.AddModelError("", "Invalid email or password.");
                 return View(model);
             }
 
-            _logger.LogInformation("Hasło poprawne. Logowanie użytkownika: {Username}", user.UserName);
+            _logger.LogInformation("Hasło poprawne dla użytkownika: {UserEmail}.", model.Username);
 
             var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.Name, user.UserName),
-        new Claim(ClaimTypes.Role, user.UserRole.ToString())
-    };
+            {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Role, user.UserRole.ToString())
+            };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-            _logger.LogInformation("Użytkownik {Username} został zalogowany pomyślnie.", user.UserName);
+            _logger.LogInformation("Użytkownik {UserEmail} został zalogowany.", model.Username);
 
-            return RedirectToAction("Dashboard", "Users");
+            if (user.UserRole == Role.Admin)
+            {
+                return RedirectToAction("AdminDashboard");
+            }
+            else if (user.UserRole == Role.Client)
+            {
+                return RedirectToAction("ClientDashboard");
+            }
+            else if (user.UserRole == Role.Employee)
+            {
+                return RedirectToAction("EmployeeDashboard");
+            }
+
+            return RedirectToAction("Index", "Home");
         }
 
-
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult Register()
         {
             return View();
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(UserRegistrationModel model)
@@ -113,14 +131,31 @@ namespace ProjektInzynierski.Controllers
             return RedirectToAction("Login");
         }
 
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Logout()
         {
+            _logger.LogInformation("Użytkownik został wylogowany.");
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login");
+        }
+
+        [Authorize(Roles = "Admin")]
+        public IActionResult AdminDashboard()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Client")]
+        public IActionResult ClientDashboard()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Employee")]
+        public IActionResult EmployeeDashboard()
+        {
+            return View();
         }
     }
 }

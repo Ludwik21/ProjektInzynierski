@@ -30,11 +30,15 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(options =>
     {
         options.LoginPath = "/Users/Login";
-        options.AccessDeniedPath = "/Users/Login";
-        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-        options.Cookie.SameSite = SameSiteMode.None;
+        options.LogoutPath = "/Users/Logout";
+        options.AccessDeniedPath = "/Users/AccessDenied";
         options.Cookie.HttpOnly = true;
+        options.ExpireTimeSpan = TimeSpan.FromDays(7);
+        options.SlidingExpiration = true;
     });
+
+builder.Services.AddAuthorization();
+
 
 logger.LogInformation("Dodano konfiguracjê uwierzytelniania z plikami cookie.");
 
@@ -104,17 +108,18 @@ using (var scope = app.Services.CreateScope())
     try
     {
         logger.LogInformation("Rozpoczynanie inicjalizacji danych SeedData...");
-        SeedData.Initialize(services, context);
+        SeedData.Initialize(services, context); // Wywo³anie metody SeedData
         logger.LogInformation("Dane SeedData zosta³y pomyœlnie zainicjalizowane.");
     }
     catch (Exception ex)
     {
         logger.LogError(ex, "Wyst¹pi³ b³¹d podczas inicjalizacji danych SeedData.");
     }
+}
 
 
-    // Middleware dla b³êdów i wymuszenia HTTPS
-    if (!app.Environment.IsDevelopment())
+// Middleware dla b³êdów i wymuszenia HTTPS
+if (!app.Environment.IsDevelopment())
     {
         app.UseExceptionHandler("/Home/Error");
         app.UseHsts();
@@ -153,7 +158,7 @@ using (var scope = app.Services.CreateScope())
             Console.WriteLine($"Error initializing SeedData: {ex.Message}");
         }
     }
-}
+
     
 
     // Mapowanie tras

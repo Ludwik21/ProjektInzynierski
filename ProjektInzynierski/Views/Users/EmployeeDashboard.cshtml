@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Panel Pracownika";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h1>Panel Pracownika</h1>
+    <p class="lead">Zarządzaj sprzętem i rezerwacjami przypisanymi do Twojej roli.</p>
+
+    <div class="row mt-4">
+        <!-- Zarządzanie sprzętem -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Zarządzanie sprzętem</h5>
+                    <p class="card-text">Przeglądaj i zarządzaj sprzętem.</p>
+                    <a href="/Equipments" class="btn btn-primary">Zarządzaj sprzętem</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zarządzanie rezerwacjami -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Zarządzanie rezerwacjami</h5>
+                    <p class="card-text">Przeglądaj i obsługuj przypisane rezerwacje.</p>
+                    <a href="/Reservations" class="btn btn-primary">Zarządzaj rezerwacjami</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

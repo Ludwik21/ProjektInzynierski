@@ -1,52 +1,54 @@
 ﻿@model ProjektInzynierski.Application.Models.Users.UserLoginModel
-
 @{
-    ViewData["Title"] = "Login";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h1 class="text-center mb-4">Login</h1>
 <div class="container mt-5">
+    <div class="text-center mb-4 p-3 mx-auto" style="max-width: 300px; background-color: rgba(33, 37, 41, 0.7); border-radius: 10px; color: #ffffff;">
+        <h2 style="font-size: 2.5rem; font-weight: bold;">Zaloguj się</h2>
+    </div>
+
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+        <div class="alert alert-success text-center">@TempData["SuccessMessage"]</div>
     }
     @if (TempData["ErrorMessage"] != null)
     {
-        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+        <div class="alert alert-danger text-center">@TempData["ErrorMessage"]</div>
     }
-    <div class="container mt-5">
-        <h2>Login</h2>
-        <form asp-action="Login" method="post">
-            @Html.AntiForgeryToken()
-            <div class="form-group">
-                <label for="UserEmail">Email</label>
-                <input type="email" name="Username" class="form-control" id="UserEmail" required placeholder="Enter your email" />
-            </div>
-            <div class="form-group">
-                <label for="Password">Password</label>
-                <input type="password" name="Password" class="form-control" id="Password" required placeholder="Enter your password" />
-            </div>
-            <button type="submit" class="btn btn-primary">Login</button>
-        </form>
+
+    <form asp-action="Login" method="post" class="card p-4 shadow-sm">
+        @Html.AntiForgeryToken()
+        <div class="mb-3">
+            <label for="Username" class="form-label">Email</label>
+            <input type="email" name="Username" class="form-control" id="Username" required placeholder="Wpisz swój email" />
+        </div>
+        <div class="mb-3">
+            <label for="Password" class="form-label">Hasło</label>
+            <input type="password" name="Password" class="form-control" id="Password" required placeholder="Wpisz swoje hasło" />
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Zaloguj się</button>
+    </form>
+
+    <div class="text-center mt-5 p-4 mx-auto" style="max-width: 300px; background-color: rgba(33, 37, 41, 0.8); border-radius: 10px; color: #ffffff;">
+        <p style="font-size: 1.25rem; font-weight: bold;">Nie masz konta?</p>
+        <a href="/Users/Register" class="btn btn-warning btn-lg">Zarejestruj się</a>
     </div>
+</div>
 
 <style>
-    body {
-        background-color: #000000;
-        color: #ffffff;
-    }
-    .btn-yellow {
+    .btn-warning {
         background-color: #FFD700;
         color: #000000;
         border: none;
     }
-    .btn-yellow:hover {
-        background-color: #FFA500;
-        color: #ffffff;
-    }
-    .card {
-        background-color: rgba(33, 37, 41, 0.8);
-        border: none;
+
+        .btn-warning:hover {
+            background-color: #FFA500;
+            color: #ffffff;
+        }
+
+    body {
+        background-color: #f8f9fa;
+        color: #000000;
     }
 </style>

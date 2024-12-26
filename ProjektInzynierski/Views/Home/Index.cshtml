@@ -3,12 +3,14 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-5 text-center">
-    <h1 class="mb-4">Witaj w naszej wypożyczalni !!</h1>
-    <p class="lead">Zarejestruj się bądź zaloguj aby przejść dalej :))</p>
-    <div class="mt-4">
-        <a href="/Users/Login" class="btn btn-yellow btn-lg mx-2">Login</a>
-        <a href="/Users/Register" class="btn btn-outline-light btn-lg mx-2">Register</a>
+<div class="container vh-100 d-flex flex-column justify-content-center align-items-center" style="margin: 0; overflow: hidden;">
+    <div class="text-center p-5 mx-auto" style="max-width: 1000px; background-color: rgba(33, 37, 41, 0.9); border-radius: 15px;">
+        <h1 style="font-size: 3.5rem; font-weight: bold; color: #FFD700;">Witaj w naszej wypożyczalni!</h1>
+        <p class="lead" style="font-size: 1.5rem; color: #ffffff;">Zarejestruj się bądź zaloguj, aby przejść dalej :)</p>
+        <div class="mt-4 d-flex justify-content-center">
+            <a href="/Users/Login" class="btn btn-yellow btn-lg mx-3" style="font-size: 1.5rem; padding: 1rem 2rem;">Login</a>
+            <a href="/Users/Register" class="btn btn-outline-light btn-lg mx-3" style="font-size: 1.5rem; padding: 1rem 2rem;">Register</a>
+        </div>
     </div>
 </div>
 
@@ -16,6 +18,8 @@
     body {
         background-color: #000000;
         color: #ffffff;
+        margin: 0;
+        overflow: hidden;
     }
 
     .btn-yellow {
@@ -38,4 +42,7 @@
             background-color: #ffffff;
             color: #000000;
         }
-</style>
+
+    .vh-100 {
+        height: 100vh;
+    }
