@@ -46,7 +46,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
+                <ul class="navbar-nav  ms-auto d-flex align-items-right">
                     @if (User?.Identity != null && User.Identity.IsAuthenticated)
                     {
                         <a href="/Users/Logout" class="btn btn-danger">Logout</a>
@@ -72,7 +72,6 @@
                     z-index: 10; /* Dodane */
                 }
             </style>
-            <p>&copy; 2024 Ludwik Sopata</p>
         </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

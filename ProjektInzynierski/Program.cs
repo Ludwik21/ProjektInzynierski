@@ -33,7 +33,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LogoutPath = "/Users/Logout";
         options.AccessDeniedPath = "/Users/AccessDenied";
         options.Cookie.HttpOnly = true;
-        options.ExpireTimeSpan = TimeSpan.FromDays(7);
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(7);
         options.SlidingExpiration = true;
     });
 

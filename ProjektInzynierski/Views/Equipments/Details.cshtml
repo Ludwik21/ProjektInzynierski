@@ -2,39 +2,40 @@
 @using Microsoft.AspNetCore.Http
 
 @{
-    ViewData["Title"] = "Equipment Details";
+    ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h1 class="text-center mb-4">Equipment Details</h1>
-<div class="card p-4 shadow-sm">
-    <div class="mb-3">
-        <h5>Name:</h5>
-        <p>@Model.Name</p>
-    </div>
-    <div class="mb-3">
-        <h5>Brand:</h5>
-        <p>@Model.Brand</p>
-    </div>
-    <div class="mb-3">
-        <h5>Description:</h5>
-        <p>@Model.Description</p>
-    </div>
-    <div class="row">
-        <div class="col-md-6 mb-3">
-            <h5>Price Per Day:</h5>
-            <p>@Model.PricePerDay @Model.PricePerDayCurrency</p>
+<div class="container mt-5">
+    <div class="card mx-auto shadow-lg" style="max-width: 800px; background-color: rgba(33, 37, 41, 0.9); border-radius: 10px;">
+        <div class="card-body text-white">
+            <h2 class="card-title text-center mb-4" style="font-weight: bold;">@Model.Name</h2>
+            <div class="mb-3">
+                <h5 class="card-subtitle mb-2">Marka:</h5>
+                <p class="card-text">@Model.Brand</p>
+            </div>
+            <div class="mb-3">
+                <h5 class="card-subtitle mb-2">Opis:</h5>
+                <p class="card-text">@Model.Description</p>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="card-subtitle mb-2">Cena za dzień:</h5>
+                    <p class="card-text">@Model.PricePerDay @Model.PricePerDayCurrency</p>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="card-subtitle mb-2">Dostępność:</h5>
+                    <p class="card-text">@(Model.IsAvailable ? "Dostępny" : "Niedostępny")</p>
+                </div>
+            </div>
+            @if (User.IsInRole("Admin") || User.IsInRole("Employee"))
+            {
+                <div class="mt-4 d-flex justify-content-center">
+                    <a href="/Equipments/Edit/@Model.Id" class="btn btn-yellow mx-2">Edytuj</a>
+                    <a href="/Equipments/Delete/@Model.Id" class="btn btn-danger mx-2">Usuń</a>
+                </div>
+            }
         </div>
-        <div class="col-md-6 mb-3">
-            <h5>Available:</h5>
-            <p>@(Model.IsAvailable ? "Yes" : "No")</p>
-        </div>
     </div>
-    @if (User.IsInRole("Admin") || User.IsInRole("Employee"))
-    {
-        <a href="/Equipments/Edit/@Model.Id" class="btn btn-yellow">Edit</a>
-        <a href="/Equipments/Delete/@Model.Id" class="btn btn-danger">Delete</a>
-    }
 </div>
 
 <style>
@@ -49,17 +50,18 @@
         border: none;
     }
 
-        .btn-yellow:hover {
-            background-color: #FFA500;
-            color: #ffffff;
-        }
-
-    .card {
-        background-color: rgba(33, 37, 41, 0.8);
-        border: none;
+    .btn-yellow:hover {
+        background-color: #FFA500;
+        color: #ffffff;
     }
 
-    .nb-3 {
-        color: white
+    .card-subtitle {
+        color: #FFD700;
+        font-weight: bold;
+    }
+
+    .card-text {
+        font-size: 1rem;
     }
 </style>
+
