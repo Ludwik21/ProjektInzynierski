@@ -1,67 +1,116 @@
 ﻿@model ProjektInzynierski.Application.Models.Users.UserRegistrationModel
 
 @{
-    ViewData["Title"] = "Register";
-        Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Rejestracja";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 class="text-center mb-4">Register</h1>
-<div class="container mt-5">
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
-    }
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-    }
-    <form asp-action="Register" method="post" class="card p-4 shadow-sm">
-        <div class="mb-3">
-            <label for="UserName" class="form-label">Username</label>
-            <input type="text" name="UserName" class="form-control" id="UserName" autocomplete="username" required />
-        </div>
-        <div class="mb-3">
-            <label for="UserEmail" class="form-label">Email</label>
-            <input type="email" name="UserEmail" class="form-control" id="UserEmail" autocomplete="email" required />
-        </div>
-        <div class="mb-3">
-            <label for="Phone" class="form-label">Phone</label>
-            <input type="tel" name="Phone" class="form-control" id="Phone" required />
-        </div>
-        <div class="mb-3">
-            <label for="Password" class="form-label">Password</label>
-            <input type="password" name="Password" class="form-control" id="Password" autocomplete="new-password" required />
-        </div>
-        <div class="mb-3">
-            <label for="ConfirmPassword" class="form-label">Confirm Password</label>
-            <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" required>
-        </div>
-        <button type="submit" class="btn btn-yellow">Register</button>
-    </form>
+<div class="container d-flex flex-column justify-content-center align-items-center" style="height: 90vh; margin-top: -5vh;">
+    <div class="card p-4 shadow-lg" style="width: 75%; background-color: rgba(33, 37, 41, 0.8); border-radius: 20px;">
+        <h2 class="text-center mb-4">Rejestracja</h2>
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger text-center">@TempData["ErrorMessage"]</div>
+        }
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success text-center">@TempData["SuccessMessage"]</div>
+        }
+
+        <form asp-action="Register" method="post" class="needs-validation" novalidate>
+            @Html.AntiForgeryToken()
+            <div class="mb-3">
+                <label for="UserName" class="form-label">Imię użytkownika</label>
+                <input type="text" id="UserName" name="UserName" class="form-control" required placeholder="Wpisz swoje imię użytkownika">
+                <div class="invalid-feedback">Proszę wprowadzić imię użytkownika.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="UserEmail" class="form-label">Adres email</label>
+                <input type="email" id="UserEmail" name="UserEmail" class="form-control" required placeholder="Wpisz swój email">
+                <div class="invalid-feedback">Proszę wprowadzić poprawny adres email.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="Phone" class="form-label">Numer telefonu</label>
+                <input type="tel" id="Phone" name="Phone" class="form-control" required placeholder="Wpisz swój numer telefonu">
+                <div class="invalid-feedback">Proszę wprowadzić numer telefonu.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="Password" class="form-label">Hasło</label>
+                <input type="password" id="Password" name="Password" class="form-control" required placeholder="Wpisz swoje hasło">
+                <div class="invalid-feedback">Proszę wprowadzić hasło.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="ConfirmPassword" class="form-label">Potwierdź hasło</label>
+                <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control" required placeholder="Potwierdź swoje hasło">
+                <div class="invalid-feedback">Proszę potwierdzić hasło.</div>
+            </div>
+
+            <button type="submit" class="btn btn-warning w-100">Zarejestruj się</button>
+        </form>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        (function () {
+            'use strict';
+
+            window.addEventListener('load', function () {
+                var forms = document.getElementsByClassName('needs-validation');
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+}
+
 
 <style>
     body {
         background-color: #000000;
         color: #ffffff;
+        overflow: hidden; /* Zablokowanie przewijania */
+        height: 100vh; /* Wysokość strony ustawiona na pełne okno przeglądarki */
     }
 
-    .btn-yellow {
+    .card {
+        background-color: rgba(33, 37, 41, 0.8);
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-label {
+        color: #ffffff;
+    }
+
+    .btn-primary {
         background-color: #FFD700;
         color: #000000;
         border: none;
     }
 
-        .btn-yellow:hover {
+        .btn-primary:hover {
             background-color: #FFA500;
             color: #ffffff;
         }
 
-    .card {
-        background-color: rgba(33, 37, 41, 0.8);
-        border: none;
+    .text-danger {
+        font-weight: bold;
     }
-    .form-label {
-        color: white
+    .mb-4{
+        color:white;
     }
 </style>

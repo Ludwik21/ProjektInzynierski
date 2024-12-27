@@ -43,7 +43,7 @@ namespace ProjektInzynierski.Controllers
             if (!ModelState.IsValid)
             {
                 _logger.LogWarning("Model logowania jest nieprawidłowy.");
-                ModelState.AddModelError("", "Please fill in all fields.");
+                TempData["ErrorMessage"] = "Wypełnij wszystkie pola poprawnie.";
                 return View(model);
             }
 
@@ -51,7 +51,7 @@ namespace ProjektInzynierski.Controllers
             if (user == null)
             {
                 _logger.LogWarning("Nie znaleziono użytkownika z adresem email: {UserEmail}", model.Username);
-                ModelState.AddModelError("", "Invalid email or password.");
+                TempData["ErrorMessage"] = "Nie znaleziono użytkownika o podanym adresie email.";
                 return View(model);
             }
 
@@ -59,9 +59,13 @@ namespace ProjektInzynierski.Controllers
             if (passwordResult != PasswordVerificationResult.Success)
             {
                 _logger.LogWarning("Nieprawidłowe hasło dla użytkownika: {UserEmail}", model.Username);
-                ModelState.AddModelError("", "Invalid email or password.");
+                TempData["ErrorMessage"] = "Nieprawidłowe hasło.";
                 return View(model);
             }
+
+            TempData["SuccessMessage"] = "Zalogowano pomyślnie!";
+            _logger.LogInformation("Hasło poprawne dla użytkownika: {UserEmail}.", model.Username);
+
 
             _logger.LogInformation("Hasło poprawne dla użytkownika: {UserEmail}.", model.Username);
 
@@ -99,8 +103,9 @@ namespace ProjektInzynierski.Controllers
             return View();
         }
 
-        [AllowAnonymous]
+
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(UserRegistrationModel model)
         {
@@ -110,26 +115,40 @@ namespace ProjektInzynierski.Controllers
                 return View(model);
             }
 
+            // Check if the user already exists
             if (await _context.Users.AnyAsync(u => u.UserEmail == model.UserEmail))
             {
                 TempData["ErrorMessage"] = "Użytkownik z tym adresem e-mail już istnieje.";
                 return View(model);
             }
 
+            // Create a new user
             var newUser = new User
             {
                 UserName = model.UserName,
                 UserEmail = model.UserEmail,
                 UserPhone = model.Phone,
-                UserPassword = _passwordHasher.HashPassword(null, model.Password)
+                UserRole = Role.Client, // Default role
+                UserPassword = _passwordHasher.HashPassword(null, model.Password) // Hashing the password
             };
 
-            _context.Users.Add(newUser);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Users.Add(newUser);
+                await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = "Rejestracja zakończona sukcesem. Możesz się teraz zalogować!";
-            return RedirectToAction("Login");
+                TempData["SuccessMessage"] = "Rejestracja zakończona sukcesem. Możesz się teraz zalogować!";
+                return RedirectToAction("Login");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Błąd podczas rejestracji użytkownika.");
+                TempData["ErrorMessage"] = "Wystąpił błąd podczas rejestracji. Spróbuj ponownie później.";
+                return View(model);
+            }
         }
+
+
 
         [HttpGet]
         [AllowAnonymous]

@@ -8,22 +8,19 @@ namespace ProjektInzynierski.Application.Models.Users
         [StringLength(50, ErrorMessage = "Nazwa użytkownika nie może mieć więcej niż 50 znaków.")]
         public string UserName { get; set; }
 
-        [Required(ErrorMessage = "E-mail jest wymagany.")]
-        [EmailAddress(ErrorMessage = "Nieprawidłowy format e-mail.")]
+        [Required(ErrorMessage = "Adres e-mail jest wymagany.")]
+        [EmailAddress(ErrorMessage = "Podaj poprawny adres e-mail.")]
         public string UserEmail { get; set; }
 
         [Required(ErrorMessage = "Numer telefonu jest wymagany.")]
-        [Phone(ErrorMessage = "Nieprawidłowy format numeru telefonu.")]
         public string Phone { get; set; }
 
         [Required(ErrorMessage = "Hasło jest wymagane.")]
-        [DataType(DataType.Password)]
-        [StringLength(100, MinimumLength = 6, ErrorMessage = "Hasło musi mieć co najmniej 6 znaków.")]
+        [MinLength(6, ErrorMessage = "Hasło musi mieć co najmniej 6 znaków.")]
         public string Password { get; set; }
 
-        [Required(ErrorMessage = "Potwierdzenie hasła jest wymagane.")]
-        [Compare("Password", ErrorMessage = "Hasła muszą być zgodne.")]
-        [DataType(DataType.Password)]
+        [Compare("Password", ErrorMessage = "Hasła muszą być identyczne.")]
         public string ConfirmPassword { get; set; }
     }
+
 }
