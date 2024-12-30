@@ -11,6 +11,14 @@ namespace ProjektInzynierski.Controllers
     public class EquipmentsController : Controller
     {
         private readonly IEquipmentService _equipmentService;
+        private readonly IEquipmentCompatibilityService _compatibilityService;
+
+        public EquipmentsController(IEquipmentService equipmentService, IEquipmentCompatibilityService compatibilityService)
+        {
+            _equipmentService = equipmentService;
+            _compatibilityService = compatibilityService;
+        }
+
 
 
         public EquipmentsController(IEquipmentService equipmentService)
@@ -179,5 +187,51 @@ namespace ProjektInzynierski.Controllers
             ViewData["EquipmentId"] = id;
             return View();
         }
+
+        [HttpPost("{equipmentId}/add-compatibility")]
+        [Authorize(Roles = "Admin, Employee")]
+        public async Task<IActionResult> AddCompatibility(Guid equipmentId, Guid compatibleEquipmentId)
+        {
+            try
+            {
+                await _compatibilityService.AddCompatibility(equipmentId, compatibleEquipmentId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("remove-compatibility/{id}")]
+        [Authorize(Roles = "Admin, Employee")]
+        public async Task<IActionResult> RemoveCompatibility(Guid id)
+        {
+            try
+            {
+                await _compatibilityService.RemoveCompatibility(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("{equipmentId}/compatibilities")]
+        [Authorize(Roles = "Admin, Employee, Client")]
+        public async Task<IActionResult> GetCompatibilities(Guid equipmentId)
+        {
+            try
+            {
+                var compatibilities = await _compatibilityService.GetCompatibilities(equipmentId);
+                return Ok(compatibilities);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

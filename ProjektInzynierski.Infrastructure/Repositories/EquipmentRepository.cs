@@ -12,6 +12,29 @@ namespace ProjektInzynierski.Infrastructure.Repositories
         {
             _context = context;
         }
+        public async Task AddCompatibility(EquipmentCompatibility compatibility)
+        {
+            await _context.EquipmentCompatibility.AddAsync(compatibility);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveCompatibility(Guid compatibilityId)
+        {
+            var compatibility = await _context.EquipmentCompatibility.FindAsync(compatibilityId);
+            if (compatibility != null)
+            {
+                _context.EquipmentCompatibility.Remove(compatibility);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<List<EquipmentCompatibility>> GetCompatibilities(Guid equipmentId)
+        {
+            return await _context.EquipmentCompatibility
+                .Where(ec => ec.EquipmentId == equipmentId || ec.CompatibleEquipmentId == equipmentId)
+                .ToListAsync();
+        }
+
 
         public async Task AddEquipment(Equipment equipment)
         {
