@@ -32,4 +32,13 @@ public class EquipmentCompatibilityService : IEquipmentCompatibilityService
     {
         return await _repository.GetCompatibilities(equipmentId);
     }
+    public async Task ClearCompatibilities(Guid equipmentId)
+    {
+        var compatibilities = await _repository.GetCompatibilities(equipmentId);
+        foreach (var compatibility in compatibilities)
+        {
+            await _repository.RemoveCompatibility(compatibility.Id);
+        }
+    }
+
 }

@@ -1,6 +1,7 @@
 ﻿using ProjektInzynierski.Application.Models.Equipment;
 using ProjektInzynierski.Domain.Entities.Equipments;
 using ProjektInzynierski.Infrastructure.Repositories;
+using ProjektInzynierski.Application.Models.Equipment;
 
 namespace ProjektInzynierski.Application.Services
 {
@@ -13,16 +14,22 @@ namespace ProjektInzynierski.Application.Services
             _repository = repository;
         }
 
-        public async Task AddEquipment(CreateEquipmentDto equipmentDto)
+        public async Task AddEquipment(Guid id, CreateEquipmentDto equipmentDto)
         {
-            var equipment = new Equipment(equipmentDto.Category, 
+            var equipment = new Equipment(
+                id,
+                equipmentDto.Category,
                 equipmentDto.Name,
-                equipmentDto.Brand, 
-                equipmentDto.Description, 
-                equipmentDto.PricePerDay, 
-                equipmentDto.PricePerDayCurrency);
+                equipmentDto.Brand,
+                equipmentDto.Description,
+                equipmentDto.PricePerDay,
+                equipmentDto.PricePerDayCurrency, // Przekazywanie Currency bezpośrednio
+                true // Domyślna dostępność
+            );
+
             await _repository.AddEquipment(equipment);
         }
+
 
         public async Task DeleteEquipment(Guid id)
         {

@@ -5,7 +5,7 @@ namespace ProjektInzynierski.Application.Services
 {
     public interface IEquipmentService
     {
-        public Task AddEquipment(CreateEquipmentDto equipmentDto);
+        public Task AddEquipment(Guid id, CreateEquipmentDto equipmentDto);
         public Task DeleteEquipment(Guid id);
         public Task EditEquipment(EquipmentDto equipmentDto);
         public Task<EquipmentDto> GetEquipment(Guid id);

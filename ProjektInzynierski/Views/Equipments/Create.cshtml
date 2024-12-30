@@ -34,5 +34,14 @@
             <option value="false">No</option>
         </select>
     </div>
+    <div class="mb-3">
+        <label for="CompatibleEquipmentIds" class="form-label">Wybierz kompatybilne sprzęty</label>
+        <select id="CompatibleEquipmentIds" name="CompatibleEquipmentIds" class="form-select" multiple>
+            @foreach (var equipment in ViewBag.AllEquipments)
+            {
+                <option value="@equipment.Id">@equipment.Name</option>
+            }
+        </select>
+    </div>
     <button type="submit" class="btn btn-yellow">Save</button>
 </form>

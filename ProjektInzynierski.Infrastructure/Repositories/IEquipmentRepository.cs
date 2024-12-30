@@ -16,5 +16,6 @@ namespace ProjektInzynierski.Infrastructure.Repositories
         public Task<List<Equipment>> GetCompatibleEquipments(Guid equipmentId);
         public Task<List<Equipment>> GetEquipmentsByCategory(EquipmentCategory equipmentCategory);
         public Task UpdateEquipment(Equipment equipment);
+
     }
 }

@@ -27,6 +27,22 @@
                     <p class="card-text">@(Model.IsAvailable ? "Dostępny" : "Niedostępny")</p>
                 </div>
             </div>
+            <h3 class="mt-4">Kompatybilne sprzęty</h3>
+            <ul class="list-group">
+                @foreach (var compatibility in Model.Compatibilities)
+                {
+                    <li class="list-group-item">
+                        @compatibility.CompatibleEquipment.Name
+                        @if (User.IsInRole("Admin") || User.IsInRole("Employee"))
+                        {
+                            <form asp-action="RemoveCompatibility" method="post" class="d-inline">
+                                <input type="hidden" name="CompatibilityId" value="@compatibility.Id" />
+                                <button type="submit" class="btn btn-danger btn-sm">Usuń</button>
+                            </form>
+                        }
+                    </li>
+                }
+            </ul>
             @if (User.IsInRole("Admin") || User.IsInRole("Employee"))
             {
                 <div class="mt-4 d-flex justify-content-center">

@@ -5,13 +5,14 @@ namespace ProjektInzynierski.Domain.Entities.Equipments
 {
     public class Equipment
     {
-        public Equipment(Guid id,
+        public Equipment(
+            Guid id,
             EquipmentCategory category,
             string name,
             string brand,
             string description,
             decimal pricePerDay,
-            Currency PricePerDayCurrency,
+            Currency pricePerDayCurrency,
             bool isAvailable)
         {
             Id = id;
@@ -20,9 +21,10 @@ namespace ProjektInzynierski.Domain.Entities.Equipments
             Brand = brand;
             Description = description;
             PricePerDay = pricePerDay;
-            PricePerDayCurrency = PricePerDayCurrency;
+            PricePerDayCurrency = pricePerDayCurrency;
             IsAvailable = isAvailable;
         }
+
 
         public Equipment(EquipmentCategory category,
             string name,

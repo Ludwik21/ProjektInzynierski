@@ -19,15 +19,6 @@ namespace ProjektInzynierski.Controllers
             _compatibilityService = compatibilityService;
         }
 
-
-
-        public EquipmentsController(IEquipmentService equipmentService)
-        {
-
-            _equipmentService = equipmentService;
-        }
-
-
         // GET: Equipments
         [AllowAnonymous]
         public async Task<IActionResult> Index()
@@ -59,14 +50,31 @@ namespace ProjektInzynierski.Controllers
                 return NotFound();
             }
 
+            // Pobierz kompatybilności sprzętu
+            var compatibilities = await _compatibilityService.GetCompatibilities(id);
+            var compatibilityDtos = compatibilities.Select(c => new EquipmentCompatibilityDto
+            {
+                Id = c.Id,
+                EquipmentId = c.EquipmentId,
+                CompatibleEquipmentId = c.CompatibleEquipmentId,
+                CompatibleEquipmentName = c.CompatibleEquipment.Name
+            }).ToList();
+
+            // Upewnij się, że Compatibilities jest zainicjalizowane
+            equipment.Compatibilities = compatibilityDtos;
+
             return View(equipment);
         }
+
+
 
 
         // GET: Equipments/Create
         [Authorize(Roles = "Admin, Employee")]
         public IActionResult Create()
         {
+            var allEquipments = _equipmentService.GetEquipments().Result;
+            ViewBag.AllEquipments = allEquipments;
             return View();
         }
 
@@ -76,15 +84,27 @@ namespace ProjektInzynierski.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin, Employee")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateEquipmentDto equipment)
+        public async Task<IActionResult> Create(CreateEquipmentDto equipmentDto, List<Guid> CompatibleEquipmentIds)
         {
             if (ModelState.IsValid)
             {
-                await _equipmentService.AddEquipment(equipment);
+                // Generowanie nowego Id
+                var newEquipmentId = Guid.NewGuid();
+
+                // Tworzenie sprzętu
+                await _equipmentService.AddEquipment(newEquipmentId, equipmentDto);
+
+                // Dodanie kompatybilnych sprzętów
+                foreach (var compatibleId in CompatibleEquipmentIds)
+                {
+                    await _compatibilityService.AddCompatibility(newEquipmentId, compatibleId);
+                }
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(equipment);
+            return View(equipmentDto);
         }
+
 
 
         // GET: Equipments/Edit/5
@@ -96,6 +116,13 @@ namespace ProjektInzynierski.Controllers
             {
                 return NotFound();
             }
+
+            var allEquipments = await _equipmentService.GetEquipments();
+            var compatibilities = await _compatibilityService.GetCompatibilities(id);
+
+            ViewBag.AllEquipments = allEquipments;
+            ViewBag.Compatibilities = compatibilities;
+
             return View(equipment);
         }
 
@@ -104,17 +131,24 @@ namespace ProjektInzynierski.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin, Employee")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, EquipmentDto equipment)
+        public async Task<IActionResult> Edit(Guid id, EquipmentDto equipment, List<Guid> CompatibleEquipmentIds)
         {
             if (id != equipment.Id)
             {
                 return NotFound();
             }
 
-
             if (ModelState.IsValid)
             {
                 await _equipmentService.EditEquipment(equipment);
+
+                // Usuń istniejące kompatybilności i dodaj nowe
+                await _compatibilityService.ClearCompatibilities(equipment.Id);
+                foreach (var compatibleId in CompatibleEquipmentIds)
+                {
+                    await _compatibilityService.AddCompatibility(equipment.Id, compatibleId);
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             return View(equipment);
