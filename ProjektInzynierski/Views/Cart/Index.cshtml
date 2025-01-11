@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<ProjektInzynierski.Application.Models.CartItem.CartItemDto>;
+@using ProjektInzynierski.Application.Extensions;
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
@@ -25,8 +26,8 @@
                 <tr>
                     <td>@item.Name</td>
                     <td>@item.Quantity</td>
-                    <td>@item.PricePerDay.ToString("C")</td>
-                    <td>@item.TotalPrice.ToString("C")</td>
+                    <td>@item.PricePerDay.ToString() @item.PricePerDayCurrency</td>
+                    <td>@item.TotalPrice.ToString()  @item.PricePerDayCurrency</td>
                     <td>
                         <form method="post" asp-action="RemoveFromCart" asp-controller="Cart">
                             <input type="hidden" name="equipmentId" value="@item.EquipmentId" />
@@ -47,6 +48,6 @@
 
 @if (Model != null && Model.Any())
 {
-    <h3>Łączna kwota: @ViewBag.TotalPrice.ToString("C")</h3>
+    <h3>Łączna kwota: @Model.GetTotalPricesSummary()</h3>
     <a asp-action="Finalize" asp-controller="Cart" class="btn btn-success">Finalizuj zamówienie</a>
 }

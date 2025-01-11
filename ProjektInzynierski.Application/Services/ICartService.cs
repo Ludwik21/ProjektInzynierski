@@ -11,7 +11,7 @@ namespace ProjektInzynierski.Application.Services
     public interface ICartService
     {
         IEnumerable<CartItemDto> GetCartItemsAsDto();
-        void AddToCart(Guid equipmentId, string name, decimal pricePerDay);
+        Task AddToCart(Guid equipmentId);
         void RemoveFromCart(Guid equipmentId);
         void UpdateCartItem(Guid equipmentId, int quantity);
         Task FinalizeCart(Guid userId, Guid clientId, DateTime startDate, DateTime endDate);

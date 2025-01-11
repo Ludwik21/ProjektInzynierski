@@ -29,10 +29,10 @@ namespace ProjektInzynierski.Controllers
 
 
         [HttpPost]
-        public IActionResult AddToCart(Guid equipmentId, string name, decimal pricePerDay)
+        public async Task<IActionResult> AddToCart(Guid equipmentId)
         {
             // Dodanie produktu do koszyka za pomocą serwisu
-            _cartService.AddToCart(equipmentId, name, pricePerDay);
+            await _cartService.AddToCart(equipmentId);
 
             // Przekierowanie po dodaniu do koszyka
             return RedirectToAction("Index", "Equipments"); // Lub "Cart", jeśli chcesz od razu pokazać koszyk

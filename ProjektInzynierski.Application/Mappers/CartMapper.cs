@@ -17,6 +17,7 @@ namespace ProjektInzynierski.Application.Mappers
                     EquipmentId = item.EquipmentId,
                     Name = item.Name,
                     PricePerDay = item.PricePerDay,
+                    PricePerDayCurrency = item.PricePerDayCurrency,
                     Quantity = item.Quantity
                 };
             }

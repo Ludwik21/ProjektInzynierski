@@ -16,18 +16,22 @@ namespace ProjektInzynierski.Application.Services
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IReservationRepository _reservationRepository;
+        private readonly IEquipmentRepository _equipmentRepository;
         private const string CartSessionKey = "Cart";
 
-        public CartService(IHttpContextAccessor httpContextAccessor, IReservationRepository reservationRepository)
+        public CartService(IHttpContextAccessor httpContextAccessor, 
+            IReservationRepository reservationRepository,
+            IEquipmentRepository equipmentRepository)
         {
             _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
             _reservationRepository = reservationRepository ?? throw new ArgumentNullException(nameof(reservationRepository));
+            _equipmentRepository = equipmentRepository ?? throw new ArgumentNullException(nameof(equipmentRepository));
         }
 
         private ISession Session => _httpContextAccessor.HttpContext?.Session
             ?? throw new InvalidOperationException("Session is not available in the current context.");
 
-        public void AddToCart(Guid equipmentId, string equipmentName, decimal price)
+        public async Task AddToCart(Guid equipmentId)
         {
             // Pobierz istniejący koszyk z sesji
             var cart = GetCartFromSession();
@@ -42,12 +46,14 @@ namespace ProjektInzynierski.Application.Services
             }
             else
             {
+                var equipment = await _equipmentRepository.GetEquipment(equipmentId);
                 // Dodaj nowy produkt do koszyka
                 cart.Add(new CartItem
                 {
                     EquipmentId = equipmentId,
-                    Name = equipmentName,
-                    PricePerDay = price,
+                    Name = equipment.Name,
+                    PricePerDay = equipment.PricePerDay,
+                    PricePerDayCurrency = equipment.PricePerDayCurrency,
                     Quantity = 1
                 });
             }
@@ -111,6 +117,7 @@ namespace ProjektInzynierski.Application.Services
                 EquipmentId = item.EquipmentId,
                 Name = item.Name,
                 PricePerDay = item.PricePerDay,
+                PricePerDayCurrency = item.PricePerDayCurrency,
                 Quantity = item.Quantity
             });
         }
