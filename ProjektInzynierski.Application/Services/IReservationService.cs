@@ -1,4 +1,5 @@
 ﻿using ProjektInzynierski.Application.Models.Reservation;
+using ProjektInzynierski.Infrastructure.Models;
 
 namespace ProjektInzynierski.Application.Services
 {
