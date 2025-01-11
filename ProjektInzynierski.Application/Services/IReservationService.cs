@@ -4,6 +4,6 @@ namespace ProjektInzynierski.Application.Services
 {
     public interface IReservationService
     {
-        public Task MakeReservation(Guid clientId, Guid requestingUserId, CreateReservationDto request);
+        public Task MakeReservation(Guid clientId, int requestingUserId, CreateReservationDto request);
     }
 }

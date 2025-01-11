@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ProjektInzynierski.Application.Mappers;
 using ProjektInzynierski.Application.Services;
 using System.Security.Claims;
@@ -53,24 +54,26 @@ namespace ProjektInzynierski.Controllers
             return Ok();
         }
 
-        [HttpPost("finalize")]
-        public async Task<IActionResult> FinalizeCart(Guid clientId, DateTime startDate, DateTime endDate)
+        [HttpPost]
+        public async Task<IActionResult> FinalizeCart()
         {
-            var userId = GetCurrentUserId();
-            await _cartService.FinalizeCart(userId, clientId, startDate, endDate);
+            var userName = GetUserName();
+            var startDate = DateTime.Now;
+            var endDate = DateTime.Now;
+            await _cartService.FinalizeCart(userName, startDate, endDate);
             return Ok();
         }
 
-        protected Guid GetCurrentUserId()
+        protected string GetUserName()
         {
-            var userIdClaim = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userName = User?.FindFirst(ClaimTypes.Name)?.Value;
 
-            if (userIdClaim == null)
+            if (userName == null)
             {
                 throw new InvalidOperationException("User is not authenticated.");
             }
 
-            return Guid.Parse(userIdClaim);
+            return userName;
         }
     }
 }

@@ -17,15 +17,18 @@ namespace ProjektInzynierski.Application.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IReservationRepository _reservationRepository;
         private readonly IEquipmentRepository _equipmentRepository;
+        private readonly IUserRepository _userRepository;
         private const string CartSessionKey = "Cart";
 
         public CartService(IHttpContextAccessor httpContextAccessor, 
             IReservationRepository reservationRepository,
-            IEquipmentRepository equipmentRepository)
+            IEquipmentRepository equipmentRepository,
+            IUserRepository userRepository)
         {
             _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
             _reservationRepository = reservationRepository ?? throw new ArgumentNullException(nameof(reservationRepository));
             _equipmentRepository = equipmentRepository ?? throw new ArgumentNullException(nameof(equipmentRepository));
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         private ISession Session => _httpContextAccessor.HttpContext?.Session
@@ -84,14 +87,16 @@ namespace ProjektInzynierski.Application.Services
 
         public decimal GetTotalPrice() => GetCartFromSession().Sum(c => c.PricePerDay * c.Quantity);
 
-        public async Task FinalizeCart(Guid userId, Guid clientId, DateTime startDate, DateTime endDate)
+        public async Task FinalizeCart(string username, DateTime startDate, DateTime endDate)
         {
             var cart = GetCartFromSession();
             if (!cart.Any()) return;
 
+            var user = await _userRepository.GetUser(username);
+
             var reservation = new Reservation(
-                userId,
-                clientId,
+                user.Id,
+                user.ClientId.Value,
                 startDate,
                 endDate
             );

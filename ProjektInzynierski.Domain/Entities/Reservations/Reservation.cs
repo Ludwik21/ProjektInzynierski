@@ -2,7 +2,7 @@
 {
     public class Reservation
     {
-        public Reservation(Guid requestingUserId,
+        public Reservation(int requestingUserId,
             Guid clientId,
             DateTime startDate,
             DateTime endDate)
@@ -18,7 +18,7 @@
         }
 
         public Reservation(Guid id,
-            Guid requestingUserId,
+            int requestingUserId,
             Guid clientId,
             ReservationStatus status,
             DateTime startDate,
@@ -38,7 +38,7 @@
 
         public Guid Id { get; }
         public DateTime ReservationDate { get; }
-        public Guid RequestingUserId { get; }
+        public int RequestingUserId { get; }
         public Guid ClientId { get; }
         public DateTime StartDate { get; }
         public DateTime EndDate { get; }

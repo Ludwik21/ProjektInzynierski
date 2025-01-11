@@ -6,7 +6,7 @@ namespace ProjektInzynierski.Infrastructure.Models
     {
         public Guid Id { get; set; }
         public DateTime ReservationDate { get; set; }
-        public Guid RequestingUserId { get; set; }
+        public int RequestingUserId { get; set; }
         public Guid ClientId { get; set; }
         public virtual ClientDao Client { get; set; }
         public List<ReservationItemDao>  Items { get; set; }

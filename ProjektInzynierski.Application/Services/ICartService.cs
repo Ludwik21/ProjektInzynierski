@@ -14,7 +14,7 @@ namespace ProjektInzynierski.Application.Services
         Task AddToCart(Guid equipmentId);
         void RemoveFromCart(Guid equipmentId);
         void UpdateCartItem(Guid equipmentId, int quantity);
-        Task FinalizeCart(Guid userId, Guid clientId, DateTime startDate, DateTime endDate);
+        Task FinalizeCart(string userName, DateTime startDate, DateTime endDate);
     }
 }
 

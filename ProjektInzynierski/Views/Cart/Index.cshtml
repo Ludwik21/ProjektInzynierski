@@ -3,7 +3,7 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
-    ViewData["Title"] = "Equipment List";
+    ViewData["Title"] = "Cart";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <h2>Twój koszyk</h2>
@@ -49,5 +49,5 @@
 @if (Model != null && Model.Any())
 {
     <h3>Łączna kwota: @Model.GetTotalPricesSummary()</h3>
-    <a asp-action="Finalize" asp-controller="Cart" class="btn btn-success">Finalizuj zamówienie</a>
+    <form method="post" asp-action="FinalizeCart" asp-controller="Cart"><button type="submit" class="btn btn-danger">Finalizuj</button></form>
 }

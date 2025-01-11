@@ -13,9 +13,9 @@ namespace ProjektInzynierski.Application.Services
             _repository = repository;
         }
 
-        public async Task MakeReservation(Guid clientId, Guid requestingUserId, CreateReservationDto request)
+        public async Task MakeReservation(Guid clientId, int requestingUserId, CreateReservationDto request)
         {
-            var reservation = new Reservation(clientId, requestingUserId, request.StartDate, request.EndDate);
+            var reservation = new Reservation(requestingUserId, clientId, request.StartDate, request.EndDate);
             
             foreach(var equipmentId in request.EquipmentIds)
             {
