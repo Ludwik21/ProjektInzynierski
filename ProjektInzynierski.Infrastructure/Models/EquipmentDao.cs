@@ -13,6 +13,7 @@ namespace ProjektInzynierski.Infrastructure.Models
         public decimal PricePerDay { get; set; }
         public Currency PricePerDayCurrency { get; set; }
         public bool IsAvailable { get; set; }
+        public int Quantity { get; set; }
         public virtual List<ReservationItemDao> ReservationItems { get; set; }
 
         // Kolekcje dla relacji

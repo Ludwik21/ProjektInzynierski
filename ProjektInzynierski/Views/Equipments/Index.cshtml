@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<ProjektInzynierski.Application.Models.Equipment.EquipmentDto>
 @using Microsoft.AspNetCore.Http
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
     ViewData["Title"] = "Equipment List";
@@ -20,6 +21,7 @@
             <th>Name</th>
             <th>Brand</th>
             <th>Price/Day</th>
+            <th>Currency</th>
             <th>Available</th>
             <th>Actions</th>
         </tr>
@@ -30,10 +32,17 @@
             <tr>
                 <td>@item.Name</td>
                 <td>@item.Brand</td>
-                <td>@item.PricePerDay @item.PricePerDayCurrency</td>
+                <td>@item.PricePerDay @item.PricePerDay</td>
+                <td>@item.PricePerDayCurrency @item.PricePerDayCurrency</td>
                 <td>@(item.IsAvailable ? "Yes" : "No")</td>
                 <td>
+
                     <a href="/Equipments/Details/@item.Id" class="btn btn-yellow btn-sm">Details</a>
+                    <form method="post" asp-action="AddToCart" asp-controller="Cart" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="equipmentId" value="@item.Id" />
+                        <button type="submit" class="btn btn-primary">Dodaj do koszyka</button>
+                    </form>
                     @if (User.IsInRole("Admin") || User.IsInRole("Employee"))
                     {
                         <a href="/Equipments/Edit/@item.Id" class="btn btn-yellow btn-sm mx-1">Edit</a>

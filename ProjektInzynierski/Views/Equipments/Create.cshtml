@@ -1,4 +1,5 @@
 ﻿@model ProjektInzynierski.Application.Models.Equipment.CreateEquipmentDto
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
     ViewData["Title"] = "Add Equipment";
@@ -7,6 +8,17 @@
 
 <h1 class="text-center mb-4">Add New Equipment</h1>
 <form asp-action="Create" method="post" class="card p-4 shadow-sm">
+    <div>
+        <label for="Category">Kategoria</label>
+        <select id="Category" name="Category" asp-for="Category">
+            <option value="Lens">Obiektyw</option>
+            <option value="Camera">Kamera</option>
+            <option value="Tripod">Statyw</option>
+            <option value="Filters">Filtry</option>
+            <option value="Light">Oświetlenie</option>
+        </select>
+        <span asp-validation-for="Category"></span>
+    </div> 
     <div class="mb-3">
         <label for="Name" class="form-label">Name</label>
         <input type="text" class="form-control" id="Name" name="Name" required>
@@ -15,9 +27,15 @@
         <label for="Brand" class="form-label">Brand</label>
         <input type="text" class="form-control" id="Brand" name="Brand" required>
     </div>
-    <div class="mb-3">
-        <label for="PricePerDay" class="form-label">Price Per Day</label>
-        <input type="number" class="form-control" id="PricePerDay" name="PricePerDay" step="0.01" required>
+    <div>
+        <label for="PricePerDay">Cena za dzień</label>
+        <input  id="PricePerDay" name="PricePerDay" asp-for="PricePerDay" />
+        <span asp-validation-for="PricePerDay"></span>
+    </div>
+    <div>
+        <label for="Description">Opis</label>
+        <textarea asp-for="Description" id="Description" name="Description"></textarea>
+        <span asp-validation-for="Description"></span>
     </div>
     <div class="mb-3">
         <label for="PricePerDayCurrency" class="form-label">Currency</label>
@@ -26,6 +44,10 @@
             <option value="EUR">EUR</option>
             <option value="PLN">PLN</option>
         </select>
+    </div>
+    <div class="mb-3">
+        <label for="Quantity" class="form-label">Quantity</label>
+        <input type="number" class="form-control" id="Quantity" name="Quantity" step="1" required>
     </div>
     <div class="mb-3">
         <label for="IsAvailable" class="form-label">Available</label>

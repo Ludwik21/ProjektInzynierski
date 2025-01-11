@@ -67,9 +67,8 @@ namespace ProjektInzynierski.Controllers
         }
 
 
-
-
         // GET: Equipments/Create
+        [HttpGet]
         [Authorize(Roles = "Admin, Employee")]
         public IActionResult Create()
         {
@@ -80,11 +79,10 @@ namespace ProjektInzynierski.Controllers
 
 
         // POST: Equipments/Create
-
         [HttpPost]
         [Authorize(Roles = "Admin, Employee")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateEquipmentDto equipmentDto, List<Guid> CompatibleEquipmentIds)
+        public async Task<IActionResult> Create(CreateEquipmentDto equipmentDto)
         {
             if (ModelState.IsValid)
             {
@@ -95,7 +93,7 @@ namespace ProjektInzynierski.Controllers
                 await _equipmentService.AddEquipment(newEquipmentId, equipmentDto);
 
                 // Dodanie kompatybilnych sprzętów
-                foreach (var compatibleId in CompatibleEquipmentIds)
+                foreach (var compatibleId in equipmentDto.CompatibleEquipmentIds)
                 {
                     await _compatibilityService.AddCompatibility(newEquipmentId, compatibleId);
                 }
@@ -176,7 +174,7 @@ namespace ProjektInzynierski.Controllers
 
 
         // POST: Equipments/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [Authorize(Roles = "Admin, Employee")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)

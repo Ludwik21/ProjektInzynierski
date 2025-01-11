@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjektInzynierski.Infrastructure.Models;
 
@@ -11,9 +12,11 @@ using ProjektInzynierski.Infrastructure.Models;
 namespace ProjektInzynierski.Infrastructure.Migrations
 {
     [DbContext(typeof(ProjektContext))]
-    partial class ProjektContextModelSnapshot : ModelSnapshot
+    [Migration("20250111144331_AddQuantityToEquipment")]
+    partial class AddQuantityToEquipment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

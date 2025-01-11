@@ -44,6 +44,7 @@ logger.LogInformation("Dodano konfiguracjê uwierzytelniania z plikami cookie.");
 
 // Konfiguracja MVC i kontekstu bazy danych
 builder.Services.AddControllersWithViews();
+builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ProjektContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -61,8 +62,9 @@ builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddScoped<IEquipmentCompatibilityService, EquipmentCompatibilityService>();
-
-
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddHttpContextAccessor();
 
 // Konfiguracja sesji
 builder.Services.AddDistributedMemoryCache();
@@ -130,6 +132,8 @@ if (!app.Environment.IsDevelopment())
     else
     {
         app.UseDeveloperExceptionPage();
+        app.UseSwagger();
+        app.UseSwaggerUI();
         logger.LogInformation("W³¹czono stronê b³êdów dla deweloperów.");
     }
 

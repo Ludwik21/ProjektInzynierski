@@ -11,5 +11,7 @@ namespace ProjektInzynierski.Application.Models.Equipment
         public string Description { get; set; }
         public decimal PricePerDay { get; set; }
         public Currency PricePerDayCurrency { get; set; }
+        public int Quantity { get; set; }
+        public IEnumerable<Guid> CompatibleEquipmentIds { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ProjektInzynierski.Domain.Common;
+using System.Security.AccessControl;
 using System.Xml.Linq;
 
 namespace ProjektInzynierski.Domain.Entities.Equipments
@@ -13,6 +14,7 @@ namespace ProjektInzynierski.Domain.Entities.Equipments
             string description,
             decimal pricePerDay,
             Currency pricePerDayCurrency,
+            int quantity,
             bool isAvailable)
         {
             Id = id;
@@ -22,6 +24,7 @@ namespace ProjektInzynierski.Domain.Entities.Equipments
             Description = description;
             PricePerDay = pricePerDay;
             PricePerDayCurrency = pricePerDayCurrency;
+            Quantity = quantity;
             IsAvailable = isAvailable;
         }
 
@@ -31,7 +34,8 @@ namespace ProjektInzynierski.Domain.Entities.Equipments
             string brand,
             string description,
             decimal pricePerDay,
-            Currency PricePerDayCurrency)
+            Currency PricePerDayCurrency,
+            int quantity)
         {
             if (pricePerDay < 0)
                 throw new ArgumentException("Price cannot be negative");
@@ -43,6 +47,7 @@ namespace ProjektInzynierski.Domain.Entities.Equipments
             Description = description;
             PricePerDay = pricePerDay;
             PricePerDayCurrency = PricePerDayCurrency;
+            Quantity = quantity;
             IsAvailable = true;
         }
 
@@ -53,6 +58,7 @@ namespace ProjektInzynierski.Domain.Entities.Equipments
         public string Description { get; }
         public decimal PricePerDay { get; }
         public Currency PricePerDayCurrency { get; }
+        public  int Quantity { get; }
         public bool IsAvailable { get; private set; }
 
         public void Reserve()

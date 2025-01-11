@@ -24,6 +24,7 @@ namespace ProjektInzynierski.Application.Services
                 equipmentDto.Description,
                 equipmentDto.PricePerDay,
                 equipmentDto.PricePerDayCurrency, // Przekazywanie Currency bezpośrednio
+                equipmentDto.Quantity,
                 true // Domyślna dostępność
             );
 
@@ -45,6 +46,7 @@ namespace ProjektInzynierski.Application.Services
                 equipmentDto.Description,
                 equipmentDto.PricePerDay,
                 equipmentDto.PricePerDayCurrency,
+                equipmentDto.Quantity,
                 equipmentDto.IsAvailable);
 
             await _repository.UpdateEquipment(equipment);
@@ -86,7 +88,8 @@ namespace ProjektInzynierski.Application.Services
                 Brand = equipment.Brand,
                 IsAvailable = equipment.IsAvailable,
                 PricePerDay = equipment.PricePerDay,
-                PricePerDayCurrency = equipment.PricePerDayCurrency
+                PricePerDayCurrency = equipment.PricePerDayCurrency,
+                Quantity = equipment.Quantity
             };
         }
     }

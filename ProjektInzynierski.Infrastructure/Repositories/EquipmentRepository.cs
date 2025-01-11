@@ -47,6 +47,7 @@ namespace ProjektInzynierski.Infrastructure.Repositories
                 Description = equipment.Description,
                 PricePerDay = equipment.PricePerDay,
                 PricePerDayCurrency = equipment.PricePerDayCurrency,
+                Quantity = equipment.Quantity,
                 IsAvailable = equipment.IsAvailable,
                 ReservationItems = new List<ReservationItemDao>(),
                 CompatibleEquipments = new List<EquipmentCompatibility>(),
@@ -98,6 +99,7 @@ namespace ProjektInzynierski.Infrastructure.Repositories
                 equipmentDao.Description,
                 equipmentDao.PricePerDay, 
                 equipmentDao.PricePerDayCurrency,
+                equipmentDao.Quantity,
                 equipmentDao.IsAvailable);
         }
 
@@ -111,6 +113,7 @@ namespace ProjektInzynierski.Infrastructure.Repositories
                     e.Description,
                     e.PricePerDay,
                     e.PricePerDayCurrency,
+                    e.Quantity,
                     e.IsAvailable))
                 .ToListAsync();
         }
@@ -126,6 +129,7 @@ namespace ProjektInzynierski.Infrastructure.Repositories
                     e.Description,
                     e.PricePerDay,
                     e.PricePerDayCurrency,
+                    e.Quantity,
                     e.IsAvailable))
                 .ToListAsync();
         }
@@ -141,6 +145,7 @@ namespace ProjektInzynierski.Infrastructure.Repositories
                     e.Description,
                     e.PricePerDay,
                     e.PricePerDayCurrency,
+                    e.Quantity,
                     e.IsAvailable))
                 .ToListAsync();
         }

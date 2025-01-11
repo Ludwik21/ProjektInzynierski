@@ -12,6 +12,7 @@ namespace ProjektInzynierski.Application.Models.Equipment
         public string Brand { get; set; }
         public string Description { get; set; }
         public decimal PricePerDay { get; set; }
+        public int Quantity { get; set; }
         public Currency PricePerDayCurrency { get; set; } // Poprawka: zmiana typu na Currency
         public bool IsAvailable { get; set; }
         public List<EquipmentCompatibilityDto> Compatibilities { get; set; } = new List<EquipmentCompatibilityDto>(); // Inicjalizacja

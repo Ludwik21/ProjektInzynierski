@@ -8,6 +8,8 @@ namespace ProjektInzynierski.Infrastructure.Models.Configuration
         public void Configure(EntityTypeBuilder<EquipmentDao> builder)
         {
             builder.HasKey(e => e.Id);
+            builder.Property(e => e.Id)
+                   .ValueGeneratedNever();
 
             // Inne właściwości i konfiguracje
             builder.Property(e => e.Name).IsRequired().HasMaxLength(100);
@@ -16,6 +18,8 @@ namespace ProjektInzynierski.Infrastructure.Models.Configuration
             builder.HasMany(e => e.CompatibleEquipments)
                 .WithOne(ec => ec.Equipment)
                 .HasForeignKey(ec => ec.EquipmentId);
+
+            builder.Property(e => e.Quantity).IsRequired();
 
             // Konfiguracja kolekcji CompatibleAsEquipment
             builder.HasMany(e => e.CompatibleAsEquipment)
