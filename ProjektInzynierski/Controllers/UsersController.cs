@@ -154,6 +154,7 @@ namespace ProjektInzynierski.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Logout()
         {
+            TempData.Clear();
             _logger.LogInformation("Użytkownik został wylogowany.");
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login");
