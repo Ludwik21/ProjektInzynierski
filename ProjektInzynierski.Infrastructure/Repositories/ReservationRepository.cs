@@ -56,6 +56,28 @@ namespace ProjektInzynierski.Infrastructure.Repositories
 
             await _context.SaveChangesAsync(true);
         }
+        public async Task<Reservation> GetReservationById(Guid id)
+        {
+            var reservation = await _context.Reservations
+                .Include(r => r.Items)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (reservation == null)
+            {
+                throw new InvalidOperationException("Reservation not found.");
+            }
+
+            return new Reservation(
+                reservation.Id,
+                reservation.RequestingUserId,
+                reservation.ClientId,
+                reservation.Status,
+                reservation.StartDate,
+                reservation.EndDate,
+                reservation.ReservationDate,
+                reservation.Items.Select(i => i.EquipmentId).ToList()
+            );
+        }
 
         public async Task UpdateReservation(Reservation reservation)
         {

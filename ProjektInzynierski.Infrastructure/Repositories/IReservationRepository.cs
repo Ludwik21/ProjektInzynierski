@@ -7,6 +7,8 @@ namespace ProjektInzynierski.Infrastructure.Repositories
         Task AddReservation(Reservation reservation);
         Task RemoveReservation(Guid id);
         Task UpdateReservation(Reservation reservation);
+        Task<Reservation> GetReservationById(Guid id);
+
 
     }
 }

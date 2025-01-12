@@ -1,11 +1,24 @@
 ﻿@model IEnumerable<ProjektInzynierski.Infrastructure.Models.ReservationDao>
-
+@using ProjektInzynierski.Domain.Entities.Reservations;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
     ViewData["Title"] = "Reservations List";
 
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@if (TempData["SuccessMessage"] != null)
+
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
 
 <h1 class="text-center mb-4">Reservations List</h1>
 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -31,6 +44,21 @@
                 <td>@reservation.EndDate.ToString("yyyy-MM-dd")</td>
                 <td>@reservation.Status</td>
                 <td>
+                    @if (reservation.Status == ReservationStatus.Issued)
+                    {
+                        <form asp-action="Confirm" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@reservation.Id" />
+                            <button type="submit" class="btn btn-success btn-sm">Confirm</button>
+                        </form>
+                        <form asp-action="Reject" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@reservation.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <span>@reservation.Status.ToString()</span>
+                    }
                     <a href="/Reservations/Details/@reservation.Id" class="btn btn-yellow btn-sm">Details</a>
                     <a href="/Reservations/Edit/@reservation.Id" class="btn btn-yellow btn-sm mx-1">Edit</a>
                     <a href="/Reservations/Delete/@reservation.Id" class="btn btn-danger btn-sm">Delete</a>

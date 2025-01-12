@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjektInzynierski.Application.Services;
+using ProjektInzynierski.Domain.Entities.Reservations;
 using ProjektInzynierski.Infrastructure.Models;
 
 namespace ProjektInzynierski.Controllers
@@ -166,6 +167,43 @@ namespace ProjektInzynierski.Controllers
             ViewBag.Equipments = await _context.Equipment.ToListAsync();
             return View(reservation);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Confirm(Guid id)
+        {
+            var reservation = await _context.Reservations.FindAsync(id);
+            if (reservation == null)
+            {
+                return NotFound("Nie znaleziono rezerwacji.");
+            }
+
+            reservation.Status = ReservationStatus.Completed; // Ustaw status na 'Completed'
+            _context.Update(reservation);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Rezerwacja została potwierdzona.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Reject(Guid id)
+        {
+            var reservation = await _context.Reservations.FindAsync(id);
+            if (reservation == null)
+            {
+                return NotFound("Nie znaleziono rezerwacji.");
+            }
+
+            reservation.Status = ReservationStatus.Rejected; // Ustaw status na 'Rejected'
+            _context.Update(reservation);
+            await _context.SaveChangesAsync();
+
+            TempData["ErrorMessage"] = "Rezerwacja została odrzucona.";
+            return RedirectToAction(nameof(Index));
+        }
+
 
         // GET: Reservations/Delete/5
         public async Task<IActionResult> Delete(Guid? id)

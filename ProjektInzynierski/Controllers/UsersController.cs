@@ -26,19 +26,14 @@ namespace ProjektInzynierski.Controllers
             _logger = logger;
         }
 
-        // GET: Equipments
-        [AllowAnonymous]
-        public async Task<IActionResult> Index()
+        public async Task<IEnumerable<User>> GetUsers()
         {
-            try
-            {
-                var equipments = await _equipmentService.GetEquipments();
-                return View(equipments);
-            }
-            catch (Exception ex)
-            {
-                return View("Error", ex.Message); // Strona błędu w razie problemów
-            }
+            return await Task.FromResult(_context.Users.ToList());
+        }
+
+        public async Task<User> GetUser(Guid userId)
+        {
+            return await _context.Users.FindAsync(userId);
         }
 
         [AllowAnonymous]
