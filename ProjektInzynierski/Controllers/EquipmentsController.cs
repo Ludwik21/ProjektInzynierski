@@ -19,7 +19,7 @@ namespace ProjektInzynierski.Controllers
             _compatibilityService = compatibilityService;
         }
 
-        // GET: Equipments
+        //INDEX
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
