@@ -48,7 +48,6 @@ namespace ProjektInzynierski.Controllers
                 return NotFound();
             }
 
-            // Pobierz kompatybilności sprzętu
             var compatibilities = await _compatibilityService.GetCompatibilities(id);
             var compatibilityDtos = compatibilities.Select(c => new EquipmentCompatibilityDto
             {
@@ -58,7 +57,7 @@ namespace ProjektInzynierski.Controllers
                 CompatibleEquipmentName = c.CompatibleEquipment?.Name ?? "Nieznany sprzęt"
             }).ToList();
 
-            // Upewnij się, że Compatibilities jest zainicjalizowane
+
             equipment.Compatibilities = compatibilityDtos;
 
             return View(equipment);
@@ -138,7 +137,7 @@ namespace ProjektInzynierski.Controllers
             {
                 await _equipmentService.EditEquipment(equipment);
 
-                // Usuń istniejące kompatybilności i dodaj nowe
+
                 await _compatibilityService.ClearCompatibilities(equipment.Id);
                 foreach (var compatibleId in CompatibleEquipmentIds)
                 {
@@ -166,7 +165,7 @@ namespace ProjektInzynierski.Controllers
                 return NotFound();
             }
 
-            return View(equipment); // Widok potwierdzenia
+            return View(equipment);
         }
 
 
