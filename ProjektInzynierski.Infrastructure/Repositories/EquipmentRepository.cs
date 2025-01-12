@@ -62,14 +62,14 @@ namespace ProjektInzynierski.Infrastructure.Repositories
 
         public async Task DeleteEquipment(Guid id)
         {
-            // Usuń powiązania z EquipmentCompatibility
+    
             var compatibilities = await _context.EquipmentCompatibility
                 .Where(c => c.CompatibleEquipmentId == id || c.EquipmentId == id)
                 .ToListAsync();
 
             _context.EquipmentCompatibility.RemoveRange(compatibilities);
 
-            // Usuń sprzęt
+
             var equipment = await _context.Equipment.FindAsync(id);
             if (equipment != null)
             {

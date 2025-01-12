@@ -36,7 +36,7 @@ namespace ProjektInzynierski.Controllers
             await _cartService.AddToCart(equipmentId);
 
             // Przekierowanie po dodaniu do koszyka
-            return RedirectToAction("Index", "Equipments"); // Lub "Cart", jeśli chcesz od razu pokazać koszyk
+            return RedirectToAction("Index", "Equipments");
         }
 
 

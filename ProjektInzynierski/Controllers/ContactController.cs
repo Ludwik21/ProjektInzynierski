@@ -10,7 +10,7 @@ public class ContactController : Controller
     [HttpPost]
     public IActionResult SendMessage(string name, string email, string subject, string message)
     {
-        // Obsługa wysyłania wiadomości (np. zapis do bazy lub wysłanie e-maila)
+        // Obsługa wysyłania wiadomości 
         TempData["Message"] = "Twoja wiadomość została wysłana! Skontaktujemy się z Tobą wkrótce.";
         return RedirectToAction("Index");
     }

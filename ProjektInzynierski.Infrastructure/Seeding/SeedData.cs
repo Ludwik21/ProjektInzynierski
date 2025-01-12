@@ -11,7 +11,7 @@ public static class SeedData
     {
         var passwordHasher = serviceProvider.GetRequiredService<IPasswordHasher<User>>();
 
-        // Tworzenie konta Admin, jeśli nie istnieje
+
         if (!context.Users.Any(u => u.UserEmail == "admin@projekt.com"))
         {
             var adminUser = new User
@@ -20,13 +20,13 @@ public static class SeedData
                 UserEmail = "admin@projekt.com",
                 UserPhone = "123456789",
                 UserRole = Role.Admin,
-                UserPassword = passwordHasher.HashPassword(null, "admin") // Hasło: Admin123!
+                UserPassword = passwordHasher.HashPassword(null, "admin")
             };
             context.Users.Add(adminUser);
             context.SaveChanges();
         }
 
-        // Tworzenie konta Employee, jeśli nie istnieje
+
         if (!context.Users.Any(u => u.UserEmail == "employee@projekt.com"))
         {
             var employeeUser = new User
@@ -35,13 +35,13 @@ public static class SeedData
                 UserEmail = "employee@projekt.com",
                 UserPhone = "987654321",
                 UserRole = Role.Employee,
-                UserPassword = passwordHasher.HashPassword(null, "employee") // Hasło: Employee123!
+                UserPassword = passwordHasher.HashPassword(null, "employee") 
             };
             context.Users.Add(employeeUser);
             context.SaveChanges();
         }
 
-        // Tworzenie konta Client, jeśli nie istnieje
+
         if (!context.Users.Any(u => u.UserEmail == "client@projekt.com"))
         {
             var client = new ClientDao()
@@ -62,7 +62,7 @@ public static class SeedData
                 UserPhone = "555555555",
                 UserRole = Role.Client,
                 ClientId = client.Id,
-                UserPassword = passwordHasher.HashPassword(null, "client") // Hasło: Client123!
+                UserPassword = passwordHasher.HashPassword(null, "client") 
             };
             context.Users.Add(clientUser);
             context.SaveChanges();
@@ -88,7 +88,7 @@ public static class SeedData
                 UserPhone = "555555555",
                 UserRole = Role.Client,
                 ClientId = client.Id,
-                UserPassword = passwordHasher.HashPassword(null, "client") // Hasło: Client123!
+                UserPassword = passwordHasher.HashPassword(null, "client") 
             };
             context.Users.Add(clientUser);
             context.SaveChanges();

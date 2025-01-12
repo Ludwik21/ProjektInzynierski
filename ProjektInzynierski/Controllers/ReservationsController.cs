@@ -20,7 +20,6 @@ namespace ProjektInzynierski.Controllers
         // GET: Reservations
         public async Task<IActionResult> Index(Guid? clientId, Guid? equipmentId, string status)
         {
-            // Pobierz listy klientów i sprzętów, które będą użyte w filtrach
             ViewBag.Clients = await _context.Clients.ToListAsync();
             ViewBag.Equipments = await _context.Equipment.ToListAsync();
 
@@ -28,7 +27,7 @@ namespace ProjektInzynierski.Controllers
                 .Include(r => r.Client)
                 .Include(r => r.Items)
                 .ThenInclude(i => i.Equipment)
-                .AsQueryable(); // Używamy IQueryable do dynamicznego budowania zapytania
+                .AsQueryable(); 
 
             // Dodanie filtrów, jeśli użytkownik je podał
             if (clientId.HasValue)
@@ -46,7 +45,6 @@ namespace ProjektInzynierski.Controllers
                 query = query.Where(r => r.Status.ToString() == status);
             }
 
-            // Zwróć wynik w widoku
             var reservations = await query.ToListAsync();
             return View(reservations);
         }
@@ -178,7 +176,7 @@ namespace ProjektInzynierski.Controllers
                 return NotFound("Nie znaleziono rezerwacji.");
             }
 
-            reservation.Status = ReservationStatus.Completed; // Ustaw status na 'Completed'
+            reservation.Status = ReservationStatus.Completed; 
             _context.Update(reservation);
             await _context.SaveChangesAsync();
 
@@ -196,7 +194,7 @@ namespace ProjektInzynierski.Controllers
                 return NotFound("Nie znaleziono rezerwacji.");
             }
 
-            reservation.Status = ReservationStatus.Rejected; // Ustaw status na 'Rejected'
+            reservation.Status = ReservationStatus.Rejected;
             _context.Update(reservation);
             await _context.SaveChangesAsync();
 

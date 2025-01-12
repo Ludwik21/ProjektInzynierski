@@ -125,21 +125,20 @@ namespace ProjektInzynierski.Controllers
                 return View(model);
             }
 
-            // Check if the user already exists
+  
             if (await _context.Users.AnyAsync(u => u.UserEmail == model.UserEmail))
             {
                 TempData["ErrorMessage"] = "Użytkownik z tym adresem e-mail już istnieje.";
                 return View(model);
             }
 
-            // Create a new user
             var newUser = new User
             {
                 UserName = model.UserName,
                 UserEmail = model.UserEmail,
                 UserPhone = model.Phone,
-                UserRole = Role.Client, // Default role
-                UserPassword = _passwordHasher.HashPassword(null, model.Password) // Hashing the password
+                UserRole = Role.Client, // Domyślna rola
+                UserPassword = _passwordHasher.HashPassword(null, model.Password) // Haszowanie
             };
 
             try

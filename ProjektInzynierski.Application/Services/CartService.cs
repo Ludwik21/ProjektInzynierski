@@ -36,21 +36,21 @@ namespace ProjektInzynierski.Application.Services
 
         public async Task AddToCart(Guid equipmentId)
         {
-            // Pobierz istniejący koszyk z sesji
+
             var cart = GetCartFromSession();
 
-            // Sprawdź, czy produkt już istnieje w koszyku
+
             var item = cart.FirstOrDefault(c => c.EquipmentId == equipmentId);
 
             if (item != null)
             {
-                // Jeśli produkt istnieje, zwiększ ilość
+
                 item.Quantity++;
             }
             else
             {
                 var equipment = await _equipmentRepository.GetEquipment(equipmentId);
-                // Dodaj nowy produkt do koszyka
+
                 cart.Add(new CartItem
                 {
                     EquipmentId = equipmentId,
@@ -61,7 +61,7 @@ namespace ProjektInzynierski.Application.Services
                 });
             }
 
-            // Zapisz koszyk w sesji
+
             SaveCartToSession(cart);
         }
 

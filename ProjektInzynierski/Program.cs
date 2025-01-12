@@ -152,7 +152,6 @@ if (!app.Environment.IsDevelopment())
 
     logger.LogInformation("Middleware zosta³y poprawnie skonfigurowane.");
 
-    // Dodaj inicjalizacjê danych SeedData
     using (var serviceScope = app.Services.CreateScope())
     {
         var scopedServices = serviceScope.ServiceProvider;
