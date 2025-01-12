@@ -2,6 +2,18 @@
     ViewData["Title"] = "Home";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Przyciemnienie tła */
+        z-index: -1;
+    }
+</style>
 
 <div class="container vh-100 d-flex flex-column justify-content-center align-items-center" style="margin: 0; overflow: hidden;">
     <div class="text-center p-5 mx-auto" style="max-width: 1000px; background-color: rgba(33, 37, 41, 0.9); border-radius: 15px;">
@@ -13,36 +25,3 @@
         </div>
     </div>
 </div>
-
-<style>
-    body {
-        background-color: #000000;
-        color: #ffffff;
-        margin: 0;
-        overflow: hidden;
-    }
-
-    .btn-yellow {
-        background-color: #FFD700;
-        color: #000000;
-        border: none;
-    }
-
-        .btn-yellow:hover {
-            background-color: #FFA500;
-            color: #ffffff;
-        }
-
-    .btn-outline-light {
-        color: #ffffff;
-        border: 1px solid #ffffff;
-    }
-
-        .btn-outline-light:hover {
-            background-color: #ffffff;
-            color: #000000;
-        }
-
-    .vh-100 {
-        height: 100vh;
-    }

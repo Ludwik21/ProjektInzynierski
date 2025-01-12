@@ -1,0 +1,75 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Kontakt";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kontakt</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: url('/images/background.png') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+            color: #ffffff;
+        }
+
+            body::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5); /* Przyciemnienie tła */
+                z-index: -1;
+            }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Kontakt z Wypożyczalnią</h1>
+        <p class="text-center">Masz pytania? Skontaktuj się z nami, a chętnie pomożemy!</p>
+
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-6">
+                <form method="post" action="/Contact/SendMessage">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Imię i nazwisko</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Adres e-mail</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="subject" class="form-label">Temat</label>
+                        <input type="text" class="form-control" id="subject" name="subject" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Wiadomość</label>
+                        <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Wyślij wiadomość</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-6 text-center">
+                <h5>Dane kontaktowe:</h5>
+                <p>
+                    <strong>Wypożyczalnia Sprzętu</strong><br>
+                    ul. Przykładowa 10<br>
+                    00-000 Miasto<br>
+                    Tel: <a href="tel:+48123456789">+48 123 456 789</a><br>
+                    E-mail: <a href="mailto:kontakt@wypozyczalnia.pl">kontakt@wypozyczalnia.pl</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

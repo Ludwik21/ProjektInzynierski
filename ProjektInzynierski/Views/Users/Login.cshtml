@@ -4,8 +4,20 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Przyciemnienie tła */
+        z-index: -1;
+    }
+</style>
 <div class="container mt-5">
-    <div class="text-center mb-4 p-3 mx-auto" style="max-width: 300px; background-color: rgba(33, 37, 41, 0.7); border-radius: 10px; color: #ffffff;">
+    <div class="text-center mb-4 p-3 mx-auto">
         <h2 style="font-size: 2.5rem; font-weight: bold;">Zaloguj się</h2>
     </div>
 
@@ -32,26 +44,9 @@
         <button type="submit" class="btn btn-primary w-100">Zaloguj się</button>
     </form>
 
-    <div class="text-center mt-5 p-4 mx-auto" style="max-width: 300px; background-color: rgba(33, 37, 41, 0.8); border-radius: 10px; color: #ffffff;">
+    <div class="text-center mt-5 p-4 mx-auto">
         <p style="font-size: 1.25rem; font-weight: bold;">Nie masz konta?</p>
         <a href="/Users/Register" class="btn btn-warning btn-lg">Zarejestruj się</a>
     </div>
 </div>
 
-<style>
-    .btn-warning {
-        background-color: #FFD700;
-        color: #000000;
-        border: none;
-    }
-
-        .btn-warning:hover {
-            background-color: #FFA500;
-            color: #ffffff;
-        }
-
-    body {
-        background-color: #f8f9fa;
-        color: #000000;
-    }
-</style>

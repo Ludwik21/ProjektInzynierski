@@ -6,6 +6,25 @@
     ViewData["Title"] = "Cart";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    body {
+        background: url('/images/background.png') no-repeat center center fixed;
+        background-size: cover;
+        position: relative;
+        color: #ffffff;
+    }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Przyciemnienie tła */
+            z-index: -1;
+        }
+</style>
 <h2>Twój koszyk</h2>
 @if (TempData["ErrorMessage"] != null)
 {
@@ -55,7 +74,7 @@
     </tbody>
 </table>
 <div class="text-right">
-    <a asp-action="Index" asp-controller="Equipments" class="btn btn-secondary">Continue Shopping</a>
+    <a method="get" asp-action="Index" asp-controller="Equipments" class="btn btn-secondary">Continue Shopping</a>
     <a method="post" asp-action="Index" asp-controller="FinalizeReservation" class="btn btn-primary">Set Reservation Dates</a>
 </div>
 @if (Model != null && Model.Any())

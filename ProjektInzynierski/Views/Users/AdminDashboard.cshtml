@@ -2,7 +2,18 @@
     ViewData["Title"] = "Panel Admina";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<style>
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Przyciemnienie tła */
+        z-index: -1;
+    }
+</style>
 <div class="container mt-5">
     <h1>Panel Admina</h1>
     <p class="lead">Witamy w centrum sterowania. Zarządzaj użytkownikami, sprzętem i rezerwacjami.</p>
@@ -13,6 +24,7 @@
             <div class="card shadow-sm">
                 <div class="card-body text-center">
                     <h5 class="card-title">Zarządzanie użytkownikami</h5>
+                    <h5 class="card-title" style="color: red;">AKTUALNIE NIEDOSTĘPNY</h5>
                     <p class="card-text">Dodawaj, edytuj i zarządzaj użytkownikami systemu.</p>
                     <a href="/Users" class="btn btn-primary">Zarządzaj użytkownikami</a>
                 </div>

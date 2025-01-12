@@ -62,14 +62,23 @@ namespace ProjektInzynierski.Infrastructure.Repositories
 
         public async Task DeleteEquipment(Guid id)
         {
-            var equipmentToRemove = _context.Equipment.FirstOrDefault(e => e.Id == id);
-            if (equipmentToRemove is null)
+            // Usuń powiązania z EquipmentCompatibility
+            var compatibilities = await _context.EquipmentCompatibility
+                .Where(c => c.CompatibleEquipmentId == id || c.EquipmentId == id)
+                .ToListAsync();
+
+            _context.EquipmentCompatibility.RemoveRange(compatibilities);
+
+            // Usuń sprzęt
+            var equipment = await _context.Equipment.FindAsync(id);
+            if (equipment != null)
             {
-                throw new InvalidOperationException("Equipment was not found");
+                _context.Equipment.Remove(equipment);
             }
-            _context.Remove(equipmentToRemove);
+
             await _context.SaveChangesAsync();
         }
+
 
         public async Task<List<Equipment>> GetCompatibleEquipments(Guid equipmentId)
         {

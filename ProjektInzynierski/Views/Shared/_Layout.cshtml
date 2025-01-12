@@ -45,19 +45,32 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <a class="btn btn-primary" href="/Cart/Index">
-                <i class="bi bi-cart"></i> Koszyk
-            </a>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav  ms-auto d-flex align-items-right">
-                    @if (User?.Identity != null && User.Identity.IsAuthenticated)
-                    {
-                        <a href="/Users/Logout" class="btn btn-danger">Logout</a>
-                    }
+                <ul class="navbar-nav ms-auto d-flex align-items-center">
+                    <li class="nav-item">
+                        <a class="btn btn-primary" href="/Cart/Index">
+                            <i class="bi bi-cart"></i> Koszyk
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown ms-2">
+                        <a class="nav-link dropdown-toggle btn btn-secondary" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Menu
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/Equipments">Equipments</a></li>
+                            <li><a class="dropdown-item" href="/Contact/Index">Contact</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            @if (User?.Identity != null && User.Identity.IsAuthenticated)
+                            {
+                                <li><a class="dropdown-item" href="/Users/Logout">Logout</a></li>
+                            }
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
+
     <div class="container mt-4">
         @RenderBody()
     </div>
