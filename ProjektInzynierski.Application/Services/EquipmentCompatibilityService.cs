@@ -1,4 +1,5 @@
-﻿using ProjektInzynierski.Application.Services;
+﻿using Microsoft.EntityFrameworkCore;
+using ProjektInzynierski.Application.Services;
 using ProjektInzynierski.Infrastructure.Models;
 using ProjektInzynierski.Infrastructure.Repositories;
 
@@ -32,6 +33,9 @@ public class EquipmentCompatibilityService : IEquipmentCompatibilityService
     {
         return await _repository.GetCompatibilities(equipmentId);
     }
+
+
+
     public async Task ClearCompatibilities(Guid equipmentId)
     {
         var compatibilities = await _repository.GetCompatibilities(equipmentId);

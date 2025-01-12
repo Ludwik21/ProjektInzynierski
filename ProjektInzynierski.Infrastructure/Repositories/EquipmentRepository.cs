@@ -31,9 +31,12 @@ namespace ProjektInzynierski.Infrastructure.Repositories
         public async Task<List<EquipmentCompatibility>> GetCompatibilities(Guid equipmentId)
         {
             return await _context.EquipmentCompatibility
-                .Where(ec => ec.EquipmentId == equipmentId || ec.CompatibleEquipmentId == equipmentId)
+                .Include(c => c.CompatibleEquipment) // Ładowanie powiązanego sprzętu
+                .Where(c => c.EquipmentId == equipmentId)
                 .ToListAsync();
         }
+
+
 
 
         public async Task AddEquipment(Equipment equipment)

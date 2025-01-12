@@ -33,7 +33,7 @@
                 @foreach (var compatibility in Model.Compatibilities)
                 {
                     <li class="list-group-item">
-                        @compatibility.CompatibleEquipment.Name
+                        @compatibility.CompatibleEquipmentName 
                         @if (User.IsInRole("Admin") || User.IsInRole("Employee"))
                         {
                             <form asp-action="RemoveCompatibility" method="post" class="d-inline">

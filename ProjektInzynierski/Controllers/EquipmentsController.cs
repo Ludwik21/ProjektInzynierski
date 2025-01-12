@@ -57,7 +57,7 @@ namespace ProjektInzynierski.Controllers
                 Id = c.Id,
                 EquipmentId = c.EquipmentId,
                 CompatibleEquipmentId = c.CompatibleEquipmentId,
-                CompatibleEquipmentName = c.CompatibleEquipment.Name
+                CompatibleEquipmentName = c.CompatibleEquipment?.Name ?? "Nieznany sprzęt"
             }).ToList();
 
             // Upewnij się, że Compatibilities jest zainicjalizowane
