@@ -19,7 +19,6 @@ namespace ProjektInzynierski.Controllers
             _compatibilityService = compatibilityService;
         }
 
-        //INDEX
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
@@ -33,7 +32,6 @@ namespace ProjektInzynierski.Controllers
                 return View("Error", ex.Message); // Strona błędu w razie problemów
             }
         }
-
 
         // GET: Equipments/Details/5
         [AllowAnonymous]
