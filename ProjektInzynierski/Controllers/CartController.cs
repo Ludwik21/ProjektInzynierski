@@ -58,9 +58,13 @@ namespace ProjektInzynierski.Controllers
         public async Task<IActionResult> FinalizeCart()
         {
             var userName = GetUserName();
-            var startDate = DateTime.Now;
-            var endDate = DateTime.Now;
+            var startDate = TempData.ContainsKey("StartDate") ? Convert.ToDateTime(TempData["StartDate"]) : DateTime.Now;
+            var endDate = TempData.ContainsKey("EndDate") ? Convert.ToDateTime(TempData["EndDate"]) : DateTime.Now.AddDays(1);
+
+            // Wywołanie usługi finalizacji koszyka z wybranymi datami
             await _cartService.FinalizeCart(userName, startDate, endDate);
+
+            TempData["SuccessMessage"] = "Cart finalized successfully!";
             return Ok();
         }
 

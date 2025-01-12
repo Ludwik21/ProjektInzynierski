@@ -26,6 +26,21 @@ namespace ProjektInzynierski.Controllers
             _logger = logger;
         }
 
+        // GET: Equipments
+        [AllowAnonymous]
+        public async Task<IActionResult> Index()
+        {
+            try
+            {
+                var equipments = await _equipmentService.GetEquipments();
+                return View(equipments);
+            }
+            catch (Exception ex)
+            {
+                return View("Error", ex.Message); // Strona błędu w razie problemów
+            }
+        }
+
         [AllowAnonymous]
         [HttpGet]
         public IActionResult Login()

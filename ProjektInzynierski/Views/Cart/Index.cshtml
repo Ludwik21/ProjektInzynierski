@@ -7,6 +7,15 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <h2>Twój koszyk</h2>
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
 
 <table class="table">
     <thead>
@@ -45,9 +54,31 @@
         }
     </tbody>
 </table>
-
+<div class="text-right">
+    <a asp-action="Index" asp-controller="Equipments" class="btn btn-secondary">Continue Shopping</a>
+    <a method="post" asp-action="Index" asp-controller="FinalizeReservation" class="btn btn-primary">Set Reservation Dates</a>
+</div>
 @if (Model != null && Model.Any())
 {
     <h3>Łączna kwota: @Model.GetTotalPricesSummary()</h3>
-    <form method="post" asp-action="FinalizeCart" asp-controller="Cart"><button type="submit" class="btn btn-danger">Finalizuj</button></form>
-}
+    @if (TempData["StartDate"] != null && TempData["EndDate"] != null)
+    {
+        <p>
+            <strong>Selected Dates:</strong> @TempData["StartDate"] - @TempData["EndDate"]
+        </p>
+        <p><strong>Total Days:</strong> @(Convert.ToDateTime(TempData["EndDate"]) - Convert.ToDateTime(TempData["StartDate"])).Days</p>
+
+        <form method="post" asp-action="FinalizeCart" asp-controller="Cart">
+            <input type="hidden" name="startDate" value="@TempData["StartDate"]" />
+            <input type="hidden" name="endDate" value="@TempData["EndDate"]" />
+            <button type="submit" class="btn btn-success">Finalizuj</button>
+        </form>
+
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
+} 
+

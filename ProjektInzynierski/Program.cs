@@ -66,6 +66,8 @@ builder.Services.AddScoped<IEquipmentCompatibilityService, EquipmentCompatibilit
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IClientService, ClientService>();
+
 
 // Konfiguracja sesji
 builder.Services.AddDistributedMemoryCache();
